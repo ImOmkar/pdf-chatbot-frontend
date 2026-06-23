@@ -10,7 +10,8 @@ import {
 
 import {
     uploadPdf,
-    getDocuments
+    getDocuments,
+    getDocumentInfo
 }
 from "../services/api"
 
@@ -33,6 +34,9 @@ export default function ChatPage() {
     const [input, setInput] = useState("")
     const [documents, setDocuments] = useState([])
     const [activeDocument, setActiveDocument] = useState(null)
+
+    const [documentInfo, setDocumentInfo] = useState(null)
+
     const [loading, setLoading] = useState(false)
 
     const loadSessions =
@@ -66,6 +70,31 @@ export default function ChatPage() {
 
                 setDocuments(
                     response.data.documents
+                )
+
+            }
+            catch(error) {
+
+                console.log(error)
+
+            }
+
+        }
+
+    const loadDocumentInfo =
+        async (
+            document
+        ) => {
+
+            try {
+
+                const response =
+                    await getDocumentInfo(
+                        document
+                    )
+
+                setDocumentInfo(
+                    response.data
                 )
 
             }
@@ -253,6 +282,14 @@ export default function ChatPage() {
                 sessions={sessions}
                 documents={documents}
 
+                loadDocuments={
+                    loadDocuments
+                }
+
+                documentInfo={documentInfo}
+                setDocumentInfo={setDocumentInfo}
+                loadDocumentInfo={loadDocumentInfo}
+
                 activeDocument={
                     activeDocument
                 }
@@ -294,8 +331,14 @@ export default function ChatPage() {
                             <ChatWindow
                                 messages={messages}
                                 loading={loading}
+                                loadDocuments={
+                                    loadDocuments
+                                }
                                 activeDocument={activeDocument}
                                 selectedSession={selectedSession}
+                                documentInfo={
+                                    documentInfo
+                                }
                                 setActiveDocument={
                                     setActiveDocument
                                 }

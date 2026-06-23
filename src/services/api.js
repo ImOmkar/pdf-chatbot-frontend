@@ -13,6 +13,18 @@ export const createSession =
 export const getSessions = () =>
     api.get("/sessions")
 
+export const renameSession =
+    (
+        sessionId,
+        title
+    ) =>
+        api.put(
+            `/sessions/${sessionId}`,
+            {
+                title
+            }
+        )
+        
 export const deleteSession =
     (
         sessionId
@@ -25,6 +37,28 @@ export const getDocuments =
     () =>
         api.get(
             "/documents"
+        )
+
+export const getDocumentInfo =
+    (filename) =>
+        api.get(
+            "/document-info",
+            {
+                params: {
+                    filename
+                }
+            }
+        )
+
+export const deleteDocument =
+    (filename) =>
+        api.delete(
+            "/documents",
+            {
+                params: {
+                    filename
+                }
+            }
         )
 
 export const getSessionMessages = (

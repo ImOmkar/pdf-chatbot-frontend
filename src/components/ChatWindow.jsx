@@ -15,8 +15,11 @@ export default function ChatWindow({
     loading,
     activeDocument,
     selectedSession,
-    setActiveDocument
+    setActiveDocument,
+    documentInfo
 }) {
+
+    console.log(documentInfo)
 
     const bottomRef = useRef(null)
 
@@ -71,7 +74,7 @@ export default function ChatWindow({
                     px-6
                 ">
 
-                {
+                {/* {
                     activeDocument && (
 
                         <div
@@ -175,6 +178,108 @@ export default function ChatWindow({
                                 <X size={18} />
 
                             </button>
+
+                        </div>
+
+                    )
+                } */}
+
+                {
+                    activeDocument &&
+                    documentInfo && (
+
+                        <div
+                            className="
+                                mb-6
+
+                                bg-slate-900
+                                border
+                                border-blue-500/20
+
+                                rounded-2xl
+
+                                p-5
+                            "
+                        >
+
+                            <div
+                                className="
+                                    flex
+                                    items-center
+                                    gap-3
+                                "
+                            >
+
+                                <div
+                                    className="
+                                        h-12
+                                        w-12
+
+                                        rounded-xl
+
+                                        bg-blue-600/20
+
+                                        flex
+                                        items-center
+                                        justify-center
+                                    "
+                                >
+                                    📄
+                                </div>
+
+                                <div>
+
+                                    <h3
+                                        className="
+                                            text-white
+                                            font-semibold
+                                        "
+                                    >
+                                        {
+                                            activeDocument
+                                                .split(/[/\\]/)
+                                                .pop()
+                                        }
+                                    </h3>
+
+                                    <p
+                                        className="
+                                            text-slate-400
+                                            text-sm
+                                            mt-1
+                                        "
+                                    >
+                                        Questions will only
+                                        be answered from
+                                        this document.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            <div
+                                className="
+                                    mt-4
+
+                                    text-sm
+
+                                    text-slate-400
+                                "
+                            >
+                                {
+                                    documentInfo.chunk_count
+                                }
+                                {" "}
+                                chunks indexed
+                                •
+                                {" "}
+                                {
+                                    documentInfo.page_count
+                                }
+                                {" "}
+                                pages
+                            </div>
 
                         </div>
 

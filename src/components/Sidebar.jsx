@@ -1,8 +1,14 @@
+import {
+    useState
+}
+from "react"
 
 import {
     getSessionMessages,
     createSession,
-    deleteSession
+    deleteSession,
+    deleteDocument,
+    renameSession
 }
 from "../services/api"
 
@@ -25,9 +31,26 @@ export default function Sidebar({
     onUpload,
     documents,
 
+    documentInfo,
+    setDocumentInfo,
+    loadDocumentInfo,
+
     activeDocument,
-    setActiveDocument
+    setActiveDocument,
+
+    loadDocuments
+    
 }) {
+
+    const [
+    editingSession,
+    setEditingSession
+    ] = useState(null)
+
+    const [
+        editedTitle,
+        setEditedTitle
+    ] = useState("")
 
     const handleNewChat =
         async () => {
@@ -112,6 +135,66 @@ export default function Sidebar({
                     )
 
                     setMessages([])
+                }
+
+            }
+            catch(error) {
+
+                console.log(error)
+
+            }
+
+        }
+
+
+    const handleRename =
+        async (
+            sessionId
+        ) => {
+
+            try {
+
+                await renameSession(
+                    sessionId,
+                    editedTitle
+                )
+
+                setEditingSession(
+                    null
+                )
+
+                await loadSessions()
+
+            }
+            catch(error) {
+
+                console.log(error)
+
+            }
+
+        }
+
+    const handleDeleteDocument =
+        async (
+            document
+        ) => {
+
+            try {
+
+                await deleteDocument(
+                    document
+                )
+
+                await loadDocuments()
+
+                if (
+                    activeDocument === document
+                ) {
+
+                    setActiveDocument(
+                        null
+                    )
+
                 }
 
             }
@@ -220,46 +303,77 @@ export default function Sidebar({
                                 index
                             ) => (
 
-                                <div
-                                    key={index}
-                                    onClick={
-                                        () =>
-                                        setActiveDocument(
-                                            document
-                                        )
-                                    }
+                                <div  key={document} className="flex items-center justify-between gap-4">
+                                    <div
+                                        onClick={
+                                            async () => {
 
-                                    className={`
-                                        flex
-                                        items-center
-                                        gap-3
-                                        p-3
-                                        rounded-xl
-                                        transition-all
-                                        cursor-pointer
+                                                setActiveDocument(
+                                                    document
+                                                )
 
-                                        ${
-                                            activeDocument === document
-                                            ? "bg-blue-600 text-white"
-                                            : "text-slate-300 hover:bg-slate-800"
+                                                await loadDocumentInfo(
+                                                    document
+                                                )
+
+                                            }
                                         }
-                                    `}
-                                >
-                                    <span>
-                                        📄
-                                    </span>
 
-                                    <span
+                                        className={`
+                                            w-full
+                                            flex
+                                            items-center
+                                            gap-3
+                                            p-3
+                                            rounded-xl
+                                            transition-all
+                                            cursor-pointer
+
+                                            ${
+                                                activeDocument === document
+                                                ? "bg-blue-600 text-white"
+                                                : "text-slate-300 hover:bg-slate-800"
+                                            }
+                                        `}>
+                                        <span>
+                                            📄
+                                        </span>
+
+                                        <span
+                                            className="
+                                                truncate
+                                            "
+                                        >
+                                            {
+                                                document
+                                                    .split(/[/\\]/)
+                                                    .pop()
+                                            }
+                                        </span>
+                                    </div>
+                                
+                                    <Trash2
+
+                                        size={16}
+
+                                        onClick={
+                                            (e) => {
+
+                                                e.stopPropagation()
+
+                                                handleDeleteDocument(
+                                                    document
+                                                )
+
+                                            }
+                                        }
+
                                         className="
-                                            truncate
+                                            text-slate-500
+                                            cursor-pointer
+                                            hover:text-red-400
                                         "
-                                    >
-                                        {
-                                            document
-                                                .split(/[/\\]/)
-                                                .pop()
-                                        }
-                                    </span>
+                                    />
                                 </div>
 
                             )
@@ -273,6 +387,7 @@ export default function Sidebar({
                             }
 
                             className="
+                                
                                 mt-3
                                 text-sm
                                 text-slate-400
@@ -352,14 +467,99 @@ export default function Sidebar({
                                     "
                                 >
 
-                                    <span     
+                                    {/* <span     
                                         className="
                                             text-sm
                                             truncate
                                             max-w-[180px]
                                         ">
                                         {session.title}
-                                    </span>
+                                    </span> */}
+
+                                    {
+                                        editingSession ===
+                                        session.session_id
+
+                                        ? (
+
+                                            <input
+
+                                                autoFocus
+
+                                                value={
+                                                    editedTitle
+                                                }
+
+                                                onChange={
+                                                    (e) =>
+                                                    setEditedTitle(
+                                                        e.target.value
+                                                    )
+                                                }
+
+                                                onBlur={
+                                                    () =>
+                                                    handleRename(
+                                                        session.session_id
+                                                    )
+                                                }
+
+                                                onKeyDown={
+                                                    (e) => {
+
+                                                        if (
+                                                            e.key === "Enter"
+                                                        ) {
+
+                                                            handleRename(
+                                                                session.session_id
+                                                            )
+
+                                                        }
+
+                                                    }
+                                                }
+
+                                                className="
+                                                    bg-slate-800
+                                                    text-white
+                                                    px-2
+                                                    py-1
+                                                    rounded
+                                                    w-full
+                                                "
+                                            />
+
+                                        )
+
+                                        : (
+
+                                            <span
+                                                onDoubleClick={
+                                                    () => {
+
+                                                        setEditingSession(
+                                                            session.session_id
+                                                        )
+
+                                                        setEditedTitle(
+                                                            session.title
+                                                        )
+
+                                                    }
+                                                }
+
+                                                className="
+                                                    text-sm
+                                                    truncate
+                                                    max-w-[180px]
+                                                "
+                                            >
+                                                {session.title}
+                                            </span>
+
+                                        )
+                                    }
 
                                     <Trash2
 
