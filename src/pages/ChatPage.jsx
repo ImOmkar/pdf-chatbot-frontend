@@ -8,6 +8,14 @@ import {
     sendMessage,
 } from "../services/api"
 
+import {
+    uploadPdf,
+    getDocuments
+}
+from "../services/api"
+
+import WelcomeScreen
+from "../components/WelcomeScreen"
 
 export default function ChatPage() {
 
@@ -23,6 +31,9 @@ export default function ChatPage() {
 
     const [sessions, setSessions] = useState([])    
     const [input, setInput] = useState("")
+    const [documents, setDocuments] = useState([])
+    const [activeDocument, setActiveDocument] = useState(null)
+    const [loading, setLoading] = useState(false)
 
     const loadSessions =
         async () => {
@@ -45,18 +56,68 @@ export default function ChatPage() {
 
         }
 
+    const loadDocuments =
+        async () => {
+
+            try {
+
+                const response =
+                    await getDocuments()
+
+                setDocuments(
+                    response.data.documents
+                )
+
+            }
+            catch(error) {
+
+                console.log(error)
+
+            }
+
+        }
 
     useEffect(
         () => {
 
             loadSessions()
+            loadDocuments()
 
         },
         []
     )
 
+    const handleUpload =
+        async (file) => {
+
+            try {
+
+                await uploadPdf(
+                    file
+                )
+
+                alert(
+                    "PDF Uploaded"
+                )
+
+                await loadSessions()
+                await loadDocuments()
+
+            }
+            catch(error) {
+
+                console.log(error)
+
+            }
+
+        }
+
     const handleSend =
         async () => {
+
+            if (loading) {
+                return
+            }
 
             if (
                 !input.trim()
@@ -75,6 +136,8 @@ export default function ChatPage() {
 
             try {
 
+                setLoading(true)
+
                 const userMessage = {
                     role: "human",
                     content: input
@@ -92,15 +155,26 @@ export default function ChatPage() {
 
                 setInput("")
 
+                const payload = {
+
+                    session_id:
+                        selectedSession.session_id,
+
+                    question
+                }
+
+                if (activeDocument) {
+
+                    payload.document =
+                        activeDocument
+                }
+
                 const response =
                     await sendMessage(
-                        {
-                            session_id:
-                                selectedSession.session_id,
-
-                            question
-                        }
+                        payload
                     )
+
+                setLoading(false)
 
                 const aiMessage = {
                     role: "ai",
@@ -120,7 +194,46 @@ export default function ChatPage() {
             }
             catch(error) {
 
+                setLoading(false)
+
                 console.log(error)
+
+                let errorMessage =
+                    "Something went wrong."
+
+                if (
+                    error.response?.data?.detail
+                ) {
+
+                    errorMessage =
+                        error.response.data.detail
+
+                }
+
+                if (
+                    error.response?.data?.detail
+                        ?.includes(
+                            "429"
+                        )
+                )
+                {
+                    errorMessage =
+                        "Daily Gemini limit reached. Try again later."
+                }
+
+                setMessages(
+                    prev => [
+
+                        ...prev,
+
+                        {
+                            role: "ai",
+                            content:
+                                `❌ ${errorMessage}`
+                        }
+
+                    ]
+                )
 
             }
         }
@@ -131,11 +244,23 @@ export default function ChatPage() {
             className="
                 h-screen
                 flex
-                bg-slate-950
+                bg-gradient-to-b
+              from-slate-950
+              to-slate-900
             ">
 
             <Sidebar
                 sessions={sessions}
+                documents={documents}
+
+                activeDocument={
+                    activeDocument
+                }
+
+                setActiveDocument={
+                    setActiveDocument
+                }
+
                 selectedSession={
                     selectedSession
                 }
@@ -148,6 +273,9 @@ export default function ChatPage() {
                 loadSessions={
                     loadSessions
                 }
+                onUpload={
+                    handleUpload
+                }
             />
 
             <div
@@ -158,15 +286,36 @@ export default function ChatPage() {
                 "
             >
 
-                <ChatWindow
-                    messages={messages}
-                />
+                {
+                    selectedSession ? (
 
-                <MessageInput 
-                    input={input}
-                    setInput={setInput}
-                    onSend={handleSend}
-                />
+                        <>
+
+                            <ChatWindow
+                                messages={messages}
+                                loading={loading}
+                                activeDocument={activeDocument}
+                                selectedSession={selectedSession}
+                                setActiveDocument={
+                                    setActiveDocument
+                                }
+                            />
+
+                            <MessageInput
+                                input={input}
+                                setInput={setInput}
+                                onSend={handleSend}
+                                loading={loading}
+                            />
+
+                        </>
+
+                    ) : (
+
+                        <WelcomeScreen />
+
+                    )
+                }
 
             </div>
 

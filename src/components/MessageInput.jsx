@@ -1,72 +1,137 @@
+import {
+    Send
+}
+from "lucide-react"
+
 export default function MessageInput({
     input,
     setInput,
-    onSend
+    onSend,
+    loading,
 }) {
 
     return (
 
         <div
             className="
-                flex
-                gap-3
+                px-6
+                pb-6
             "
         >
 
-            <input
-                value={input}
-                onChange={(e) =>
-                    setInput(
-                        e.target.value
-                    )
-                }
-                placeholder="Ask a question..."
+            <div
                 className="
-                    flex-1
-                    bg-slate-900
-                    text-white
-                    rounded-xl
+                    max-w-5xl
+                    mx-auto
+
+                    flex
+                    items-center
+                    gap-3
+
+                   bg-slate-900
+                    border
+                    border-slate-800
+
+                    focus-within:border-blue-500
+                    focus-within:ring-1
+                    focus-within:ring-blue-500
+
+                    rounded-2xl
+
                     px-4
                     py-3
-                    outline-none
-                "
-            />
 
-            <div className="flex items-center">
-                <button
-                    onClick={onSend}
+                    shadow-lg
+                "
+            >
+
+                <input
+                    value={input}
+
+                    onChange={(e) =>
+                        setInput(
+                            e.target.value
+                        )
+                    }
+
                     onKeyDown={(e) => {
+
                         if (
                             e.key === "Enter"
+                            &&
+                            !loading
                         ) {
+
                             onSend()
+
                         }
 
                     }}
+
+                    placeholder="Ask anything about your documents..."
+
                     className="
-                        bg-blue-600
-                        hover:bg-blue-700
-                        px-6
-                        rounded-xl
+                        flex-1
+
+                        bg-transparent
+
                         text-white
+                        placeholder:text-slate-500
+
+                        outline-none
                     "
-                >
-                    Send
-                </button>
+                />
 
                 <button
-                    className="
-                        mt-2
-                        w-full
-                        border
-                        border-slate-700
-                        text-slate-300
-                        rounded-lg
-                        py-2
-                    "
+
+                    disabled={loading}
+
+                    onClick={onSend}
+
+                    className={`
+                        h-10
+                        w-10
+
+                        flex
+                        items-center
+                        justify-center
+
+                        rounded-xl
+
+                        transition-all
+
+                        ${
+                            loading
+                            ? `
+                                bg-slate-700
+                                cursor-not-allowed
+                            `
+                            : `
+                                bg-blue-600
+                                hover:bg-blue-500
+                            `
+                        }
+                    `}
                 >
-                    Upload PDF
+
+                    {
+                        loading
+                        ? <div
+                            className="
+                                animate-spin
+                                h-4
+                                w-4
+                                border-2
+                                border-white
+                                border-t-transparent
+                                rounded-full
+                            "
+                            />
+                        : <Send size={18} />
+                    }
+
                 </button>
+
             </div>
 
         </div>

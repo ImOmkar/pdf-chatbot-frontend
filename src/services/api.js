@@ -13,6 +13,20 @@ export const createSession =
 export const getSessions = () =>
     api.get("/sessions")
 
+export const deleteSession =
+    (
+        sessionId
+    ) =>
+        api.delete(
+            `/sessions/${sessionId}`
+        )
+        
+export const getDocuments =
+    () =>
+        api.get(
+            "/documents"
+        )
+
 export const getSessionMessages = (
     sessionId
 ) =>
@@ -27,5 +41,22 @@ export const sendMessage = (
         "/chat",
         payload
     )
+
+export const uploadPdf =
+    (file) => {
+
+        const formData =
+            new FormData()
+
+        formData.append(
+            "file",
+            file
+        )
+
+        return api.post(
+            "/upload",
+            formData
+        )
+    }
 
 export default api
