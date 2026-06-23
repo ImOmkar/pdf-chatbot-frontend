@@ -1,10 +1,79 @@
-export default function Sidebar() {
+import {
+    useEffect,
+    useState
+} from "react"
 
-    const sessions = [
-        "Loan Discussion",
-        "Employee Details",
-        "Company Policy"
-    ]
+import {
+    getSessions,
+    getSessionMessages
+}
+from "../services/api"
+
+export default function Sidebar({
+
+    selectedSession,
+    setSelectedSession,
+    setMessages
+
+}) {
+
+    const [sessions, setSessions] = useState([])
+
+    useEffect(
+        () => {
+
+            loadSessions()
+
+        },
+        []
+    )
+
+    const loadMessages =
+    async (session) => {
+
+        try {
+
+            const response =
+                await getSessionMessages(
+                    session.session_id
+                )
+
+            setSelectedSession(
+                session
+            )
+
+            setMessages(
+                response.data.messages
+            )
+
+        }
+        catch(error) {
+
+            console.log(error)
+
+        }
+    }
+
+    const loadSessions =
+        async () => {
+
+            try {
+
+                const response =
+                    await getSessions()
+
+                setSessions(
+                    response.data.sessions
+                )
+
+            }
+            catch(error) {
+
+                console.log(error)
+
+            }
+
+        }
 
     return (
 
@@ -62,28 +131,42 @@ export default function Sidebar() {
                 "
             >
 
-                {
-                    sessions.map(
-                        (
-                            session,
-                            index
-                        ) => (
-                            <div
-                                key={index}
-                                className="
-                                    p-3
-                                    rounded-lg
-                                    cursor-pointer
-                                    text-slate-300
-                                    hover:bg-slate-800
-                                    mb-2
-                                "
-                            >
-                                {session}
-                            </div>
-                        )
+            {
+                sessions.map(
+                    (session) => (
+
+                        <div
+                            key={
+                                session.session_id
+                            }
+
+                            onClick={
+                                () =>
+                                loadMessages(
+                                    session
+                                )
+                            }
+
+                            className={`
+                                p-3
+                                rounded-lg
+                                cursor-pointer
+                                mb-2
+
+                                ${
+                                    selectedSession?.session_id
+                                    === session.session_id
+                                    ? "bg-slate-700 text-white"
+                                    : "hover:bg-slate-800 text-slate-300"
+                                }
+                            `}
+                        >
+                            {session.title}
+                        </div>
+
                     )
-                }
+                )
+            }
 
             </div>
 

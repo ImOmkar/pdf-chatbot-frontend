@@ -1,33 +1,29 @@
 import Message from "./Message"
 
-export default function ChatWindow() {
+export default function ChatWindow({
+    messages
+}) {
 
-    const messages = [
+    if (
+        messages.length === 0
+    ) {
 
-        {
-            role: "user",
-            content:
-                "Who approved the loan?"
-        },
+        return (
 
-        {
-            role: "assistant",
-            content:
-                "Branch Manager Neha Kulkarni"
-        },
+            <div
+                className="
+                    flex-1
+                    flex
+                    items-center
+                    justify-center
+                    text-slate-400
+                "
+            >
+                Select a conversation
+            </div>
 
-        {
-            role: "user",
-            content:
-                "What was the loan amount?"
-        },
-
-        {
-            role: "assistant",
-            content:
-                "INR 25,00,000"
-        }
-    ]
+        )
+    }
 
     return (
 
@@ -75,7 +71,9 @@ export default function ChatWindow() {
                             <Message
                                 key={index}
                                 role={
-                                    message.role
+                                    message.role === "human"
+                                        ? "user"
+                                        : "assistant"
                                 }
                                 content={
                                     message.content

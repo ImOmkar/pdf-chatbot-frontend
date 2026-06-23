@@ -1,4 +1,8 @@
-export default function MessageInput() {
+export default function MessageInput({
+    input,
+    setInput,
+    onSend
+}) {
 
     return (
 
@@ -10,6 +14,12 @@ export default function MessageInput() {
         >
 
             <input
+                value={input}
+                onChange={(e) =>
+                    setInput(
+                        e.target.value
+                    )
+                }
                 placeholder="Ask a question..."
                 className="
                     flex-1
@@ -24,6 +34,15 @@ export default function MessageInput() {
 
             <div className="flex items-center">
                 <button
+                    onClick={onSend}
+                    onKeyDown={(e) => {
+                        if (
+                            e.key === "Enter"
+                        ) {
+                            onSend()
+                        }
+
+                    }}
                     className="
                         bg-blue-600
                         hover:bg-blue-700
