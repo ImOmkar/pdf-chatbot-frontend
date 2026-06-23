@@ -1,70 +1,42 @@
-import {
-    useEffect,
-    useState
-} from "react"
 
 import {
-    getSessions,
-    getSessionMessages
+    getSessionMessages,
+    createSession
 }
 from "../services/api"
 
 export default function Sidebar({
-
+    sessions,
     selectedSession,
     setSelectedSession,
-    setMessages
-
+    setMessages,
+    loadSessions
 }) {
 
-    const [sessions, setSessions] = useState([])
-
-    useEffect(
-        () => {
-
-            loadSessions()
-
-        },
-        []
-    )
-
-    const loadMessages =
-    async (session) => {
-
-        try {
-
-            const response =
-                await getSessionMessages(
-                    session.session_id
-                )
-
-            setSelectedSession(
-                session
-            )
-
-            setMessages(
-                response.data.messages
-            )
-
-        }
-        catch(error) {
-
-            console.log(error)
-
-        }
-    }
-
-    const loadSessions =
+    const handleNewChat =
         async () => {
 
             try {
 
                 const response =
-                    await getSessions()
+                    await createSession()
 
-                setSessions(
-                    response.data.sessions
+                const session = {
+
+                    session_id:
+                        response.data.session_id,
+
+                    title:
+                        "New Chat"
+                }
+
+                setSelectedSession(
+                    session
                 )
+
+                setMessages([])
+
+                await loadSessions()
 
             }
             catch(error) {
@@ -73,6 +45,32 @@ export default function Sidebar({
 
             }
 
+        }
+
+    const loadMessages =
+        async (session) => {
+
+            try {
+
+                const response =
+                    await getSessionMessages(
+                        session.session_id
+                    )
+
+                setSelectedSession(
+                    session
+                )
+
+                setMessages(
+                    response.data.messages
+                )
+
+            }
+            catch(error) {
+
+                console.log(error)
+
+            }
         }
 
     return (
@@ -109,6 +107,7 @@ export default function Sidebar({
             <div className="p-4">
 
                 <button
+                    onClick={handleNewChat}
                     className="
                         w-full
                         bg-blue-600

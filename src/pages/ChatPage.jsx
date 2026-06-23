@@ -1,11 +1,13 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 import Sidebar from "../components/Sidebar"
 import ChatWindow from "../components/ChatWindow"
 import MessageInput from "../components/MessageInput"
 import {
-    sendMessage
+    getSessions,
+    sendMessage,
 } from "../services/api"
+
 
 export default function ChatPage() {
 
@@ -19,8 +21,39 @@ export default function ChatPage() {
         setMessages
     ] = useState([])
 
-    
+    const [sessions, setSessions] = useState([])    
     const [input, setInput] = useState("")
+
+    const loadSessions =
+        async () => {
+
+            try {
+
+                const response =
+                    await getSessions()
+
+                setSessions(
+                    response.data.sessions
+                )
+
+            }
+            catch(error) {
+
+                console.log(error)
+
+            }
+
+        }
+
+
+    useEffect(
+        () => {
+
+            loadSessions()
+
+        },
+        []
+    )
 
     const handleSend =
         async () => {
@@ -82,6 +115,8 @@ export default function ChatPage() {
                     ]
                 )
 
+                await loadSessions()
+
             }
             catch(error) {
 
@@ -97,10 +132,10 @@ export default function ChatPage() {
                 h-screen
                 flex
                 bg-slate-950
-            "
-        >
+            ">
 
             <Sidebar
+                sessions={sessions}
                 selectedSession={
                     selectedSession
                 }
@@ -109,6 +144,9 @@ export default function ChatPage() {
                 }
                 setMessages={
                     setMessages
+                }
+                loadSessions={
+                    loadSessions
                 }
             />
 
