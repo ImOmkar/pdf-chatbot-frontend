@@ -1,5 +1,7 @@
 import {
-    useState
+    useState,
+    useRef,
+    useEffect
 }
 from "react"
 
@@ -14,8 +16,16 @@ from "../services/api"
 
 import UploadModal
 from "../components/UploadModal"
+
+import ConfirmModal
+from "./ConfirmModal"
+
+
 import {
-    Trash2
+    Trash2,
+    MoreHorizontal,
+    Pencil,
+    ChevronRight
 }
 from "lucide-react"
 
@@ -43,14 +53,46 @@ export default function Sidebar({
 }) {
 
     const [
-    editingSession,
-    setEditingSession
+        editingSession,
+        setEditingSession
     ] = useState(null)
 
     const [
         editedTitle,
         setEditedTitle
     ] = useState("")
+
+    const [
+        openMenu,
+        setOpenMenu
+    ] = useState(null)
+
+    const [
+        confirmModal,
+        setConfirmModal
+    ] = useState({
+
+        open: false,
+
+        title: "",
+
+        message: "",
+
+        confirmText: "Confirm",
+
+        danger: false,
+
+        onConfirm: null
+
+    })
+
+    const menuRef = useRef(null)
+
+    const getFileName =
+        (path) =>
+            path
+                .split(/[/\\]/)
+                .pop()
 
     const handleNewChat =
         async () => {
@@ -146,7 +188,6 @@ export default function Sidebar({
 
         }
 
-
     const handleRename =
         async (
             sessionId
@@ -205,6 +246,45 @@ export default function Sidebar({
             }
 
         }
+
+    useEffect(
+        () => {
+
+            const handleClickOutside =
+                (event) => {
+
+                    if (
+                        menuRef.current &&
+                        !menuRef.current.contains(
+                            event.target
+                        )
+                    ) {
+
+                        setOpenMenu(
+                            null
+                        )
+
+                    }
+
+                }
+
+            document.addEventListener(
+                "mousedown",
+                handleClickOutside
+            )
+
+            return () => {
+
+                document.removeEventListener(
+                    "mousedown",
+                    handleClickOutside
+                )
+
+            }
+
+        },
+        []
+    )
 
     return (
 
@@ -345,9 +425,7 @@ export default function Sidebar({
                                             "
                                         >
                                             {
-                                                document
-                                                    .split(/[/\\]/)
-                                                    .pop()
+                                                getFileName(document)
                                             }
                                         </span>
                                     </div>
@@ -356,17 +434,33 @@ export default function Sidebar({
 
                                         size={16}
 
-                                        onClick={
-                                            (e) => {
+                                        onClick={(e) => {
 
-                                                e.stopPropagation()
+                                            e.stopPropagation()
 
-                                                handleDeleteDocument(
-                                                    document
-                                                )
+                                            setConfirmModal({
 
-                                            }
-                                        }
+                                                open: true,
+
+                                                title: "Delete Document",
+
+                                                message: `Delete "${getFileName(document)}"?`,
+
+                                                confirmText: "Delete",
+
+                                                danger: true,
+
+                                                onConfirm: async () => {
+
+                                                    await handleDeleteDocument(
+                                                        document
+                                                    )
+
+                                                }
+
+                                            })
+
+                                        }}
 
                                         className="
                                             text-slate-500
@@ -457,8 +551,8 @@ export default function Sidebar({
                                                 text-slate-300
                                             `
                                     }
-                                `}
-                            >
+                                `}>
+                                    
                                 <div
                                     className="
                                         flex
@@ -466,15 +560,6 @@ export default function Sidebar({
                                         justify-between
                                     "
                                 >
-
-                                    {/* <span     
-                                        className="
-                                            text-sm
-                                            truncate
-                                            max-w-[180px]
-                                        ">
-                                        {session.title}
-                                    </span> */}
 
                                     {
                                         editingSession ===
@@ -561,7 +646,7 @@ export default function Sidebar({
                                         )
                                     }
 
-                                    <Trash2
+                                    {/* <Trash2
 
                                         size={16}
 
@@ -583,7 +668,225 @@ export default function Sidebar({
                                             hover:text-red-400
                                             transition-all
                                         "
-                                    />
+                                    /> */}
+
+                                    <div
+                                        ref={menuRef}
+                                        className="
+                                            relative
+                                        "
+                                    >
+
+                                        <MoreHorizontal
+
+                                            size={18}
+
+                                            onClick={
+                                                (e) => {
+
+                                                    e.stopPropagation()
+
+                                                    setOpenMenu(
+
+                                                        openMenu === session.session_id
+                                                            ? null
+                                                            : session.session_id
+
+                                                    )
+
+                                                }
+                                            }
+
+                                            className="
+                                                cursor-pointer
+                                                text-slate-500
+                                                hover:text-white
+                                            "
+                                        />
+
+                                        {
+                                            openMenu === session.session_id && (
+
+                                                <div
+                                                    className="
+                                                        absolute
+
+                                                        right-0
+                                                        top-8
+
+                                                        w-48
+
+                                                        bg-slate-900
+
+                                                        border
+                                                        border-slate-700
+
+                                                        rounded-2xl
+
+                                                        shadow-2xl
+
+                                                        overflow-hidden
+
+                                                        animate-in
+                                                        fade-in
+                                                        zoom-in-95
+
+                                                        z-50
+                                                    ">
+
+                                                    <button
+
+                                                        onClick={
+                                                            (e) => {
+
+                                                                e.stopPropagation()
+
+                                                                setEditingSession(
+                                                                    session.session_id
+                                                                )
+
+                                                                setEditedTitle(
+                                                                    session.title
+                                                                )
+
+                                                                setOpenMenu(
+                                                                    null
+                                                                )
+
+                                                            }
+                                                        }
+
+                                                        className="
+                                                            w-full
+
+                                                            flex
+                                                            items-center
+                                                            justify-between
+
+                                                            px-4
+                                                            py-3
+
+                                                            text-sm
+
+                                                            text-slate-300
+
+                                                            hover:bg-slate-800
+                                                            hover:text-white
+
+                                                            transition-all
+                                                        "
+                                                    >
+
+                                                        <div
+                                                            className="
+                                                                flex
+                                                                items-center
+                                                                gap-3
+                                                            "
+                                                        >
+
+                                                            <Pencil
+                                                                size={16}
+                                                            />
+
+                                                            <span>
+                                                                Rename
+                                                            </span>
+
+                                                        </div>
+
+                                                        <ChevronRight
+                                                            size={15}
+                                                        />
+
+                                                    </button>
+
+                                                    <button
+
+                                                        onClick={
+                                                            (e) => {
+
+                                                                e.stopPropagation()
+
+                                                                setOpenMenu(
+                                                                    null
+                                                                )
+
+                                                                setConfirmModal({
+
+                                                                    open: true,
+
+                                                                    title: "Delete Session",
+
+                                                                    message: `Are you sure you want to delete "${session.title}"?\n\nThis action cannot be undone.`,
+
+                                                                    confirmText: "Delete",
+
+                                                                    danger: true,
+
+                                                                    onConfirm: async () => {
+
+                                                                        await handleDelete(
+                                                                            session.session_id
+                                                                        )
+
+                                                                    }
+
+                                                                })
+
+                                                            }
+                                                        }
+
+                                                        className="
+                                                            w-full
+
+                                                            flex
+                                                            items-center
+                                                            justify-between
+
+                                                            px-4
+                                                            py-3
+
+                                                            text-sm
+
+                                                            text-red-400
+
+                                                            hover:bg-red-500/10
+
+                                                            transition-all
+                                                        "
+                                                    >
+
+                                                        <div
+                                                            className="
+                                                                flex
+                                                                items-center
+                                                                gap-3
+                                                            "
+                                                        >
+
+                                                            <Trash2
+                                                                size={16}
+                                                            />
+
+                                                            <span>
+                                                                Delete
+                                                            </span>
+
+                                                        </div>
+
+                                                        <ChevronRight
+                                                            size={15}
+                                                        />
+
+                                                    </button>
+
+                                                </div>
+
+                                            )
+                                        }
+
+                                    </div>
 
                                 </div>
 
@@ -594,6 +897,113 @@ export default function Sidebar({
                 }
 
             </div>
+
+
+            {/* confirm modal */}
+
+            {/* <ConfirmModal
+
+                open={
+                    confirmDelete
+                }
+
+                title="Delete Session"
+
+                message={`
+                Are you sure you want to delete
+                "${sessionToDelete?.title}"?
+
+                This action cannot be undone.
+                `}
+
+                    confirmText="Delete"
+
+                    danger={true}
+
+                    onCancel={
+                        () =>
+                        setConfirmDelete(
+                            false
+                        )
+                    }
+
+                    onConfirm={
+                        async () => {
+
+                            await handleDelete(
+                                sessionToDelete.session_id
+                            )
+
+                            setConfirmDelete(
+                                false
+                            )
+
+                            setSessionToDelete(
+                                null
+                            )
+
+                        }
+                    }
+
+            /> */}
+
+
+            <ConfirmModal
+
+                open={
+                    confirmModal.open
+                }
+
+                title={
+                    confirmModal.title
+                }
+
+                message={
+                    confirmModal.message
+                }
+
+                confirmText={
+                    confirmModal.confirmText
+                }
+
+                danger={
+                    confirmModal.danger
+                }
+
+                onCancel={
+                    () =>
+                    setConfirmModal({
+
+                        ...confirmModal,
+
+                        open: false
+
+                    })
+                }
+
+                onConfirm={
+                    async () => {
+
+                        if (
+                            confirmModal.onConfirm
+                        ) {
+
+                            await confirmModal.onConfirm()
+
+                        }
+
+                        setConfirmModal({
+
+                            ...confirmModal,
+
+                            open: false
+
+                        })
+
+                    }
+                }
+
+            />
 
         </div>
     )

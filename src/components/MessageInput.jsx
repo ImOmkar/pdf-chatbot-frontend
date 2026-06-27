@@ -1,5 +1,7 @@
 import {
-    Send
+    Send,
+    FileText,
+    BookOpen
 }
 from "lucide-react"
 

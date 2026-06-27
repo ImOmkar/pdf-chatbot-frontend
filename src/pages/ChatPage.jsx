@@ -206,10 +206,20 @@ export default function ChatPage() {
                 setLoading(false)
 
                 const aiMessage = {
+
                     role: "ai",
+
                     content:
-                        response.data.answer
+                        response.data.answer,
+
+                    sources:
+                        response.data.sources || []
+
                 }
+
+                console.log(
+                    aiMessage
+                )
 
                 setMessages(
                     prev => [

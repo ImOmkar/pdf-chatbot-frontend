@@ -1,6 +1,9 @@
 import ReactMarkdown
 from "react-markdown"
-
+import {
+    Send
+}
+from "lucide-react"
 import {
     Prism as SyntaxHighlighter
 }
@@ -13,7 +16,8 @@ from "react-syntax-highlighter/dist/esm/styles/prism"
 
 export default function Message({
     role,
-    content
+    content,
+    sources
 }) {
 
     const isUser =
@@ -118,7 +122,133 @@ export default function Message({
                     {content}
                 </ReactMarkdown>
 
-            </div>
+                {
+                    role === "assistant"
+                    &&
+
+                    sources?.length > 0 && (
+
+                        <div
+                            className="
+                                mt-5
+
+                                border-t
+                                border-slate-700
+
+                                pt-4
+                            "
+                        >
+
+                            <div
+                                className="
+                                    flex
+                                    items-center
+                                    gap-2
+
+                                    text-xs
+                                    uppercase
+
+                                    tracking-wider
+
+                                    text-slate-400
+
+                                    mb-3
+                                "
+                            >
+
+                                <BookOpen
+                                    size={14}
+                                />
+
+                                Sources
+
+                            </div>
+
+                            <div
+                                className="
+                                    flex
+                                    flex-wrap
+                                    gap-3
+                                "
+                            >
+
+                                {
+                                    sources.map(
+
+                                        (
+                                            source,
+                                            index
+                                        ) => (
+
+                                            <div
+
+                                                key={index}
+
+                                                className="
+                                                    bg-slate-900
+
+                                                    border
+                                                    border-slate-700
+
+                                                    rounded-xl
+
+                                                    px-3
+                                                    py-2
+
+                                                    min-w-[180px]
+                                                "
+                                            >
+
+                                                <div
+                                                    className="
+                                                        flex
+                                                        items-center
+                                                        gap-2
+
+                                                        text-white
+                                                        text-sm
+                                                    "
+                                                >
+
+                                                    <FileText
+                                                        size={15}
+                                                    />
+
+                                                    {
+                                                        source.document
+                                                    }
+
+                                                </div>
+
+                                                <div
+                                                    className="
+                                                        mt-1
+
+                                                        text-xs
+
+                                                        text-slate-400
+                                                    "
+                                                >
+
+                                                    Page {source.page}
+
+                                                </div>
+
+                                            </div>
+
+                                        )
+
+                                    )
+                                }
+
+                            </div>
+
+                        </div>
+
+                    )
+                }
+
+                </div>
 
             {
                 isUser && (

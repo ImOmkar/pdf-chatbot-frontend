@@ -300,8 +300,13 @@ export default function ChatWindow({
                                         ? "user"
                                         : "assistant"
                                 }
+
                                 content={
                                     message.content
+                                }
+
+                                sources={
+                                    message.sources || []
                                 }
                             />
 
