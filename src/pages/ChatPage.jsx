@@ -18,6 +18,9 @@ from "../services/api"
 import WelcomeScreen
 from "../components/WelcomeScreen"
 
+import toast
+from "react-hot-toast"
+
 export default function ChatPage() {
 
     const [
@@ -125,8 +128,8 @@ export default function ChatPage() {
                     file
                 )
 
-                alert(
-                    "PDF Uploaded"
+                toast.success(
+                    `${file.name} uploaded successfully.`
                 )
 
                 await loadSessions()
@@ -136,6 +139,10 @@ export default function ChatPage() {
             catch(error) {
 
                 console.log(error)
+
+                toast.error(
+                    "Upload failed."
+                )
 
             }
 

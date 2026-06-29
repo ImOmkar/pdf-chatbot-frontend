@@ -20,14 +20,14 @@ from "../components/UploadModal"
 import ConfirmModal
 from "./ConfirmModal"
 
+import SessionItem
+from "./SessionItem"
 
-import {
-    Trash2,
-    MoreHorizontal,
-    Pencil,
-    ChevronRight
-}
-from "lucide-react"
+import DocumentItem 
+from "./DocumentItem"
+
+import toast
+from "react-hot-toast"
 
 export default function Sidebar({
     sessions,
@@ -119,6 +119,10 @@ export default function Sidebar({
 
                 await loadSessions()
 
+                toast.success(
+                    "Ready for a new conversation."
+                )
+
             }
             catch(error) {
 
@@ -167,6 +171,10 @@ export default function Sidebar({
 
                 await loadSessions()
 
+                toast.success(
+                    "Session deleted."
+                )
+
                 if (
                     selectedSession?.session_id
                     === sessionId
@@ -183,6 +191,10 @@ export default function Sidebar({
             catch(error) {
 
                 console.log(error)
+
+                toast.error(
+                    "Couldn't rename session."
+                )
 
             }
 
@@ -206,6 +218,10 @@ export default function Sidebar({
 
                 await loadSessions()
 
+                toast.success(
+                    `Renamed to "${editedTitle}".`
+                )
+
             }
             catch(error) {
 
@@ -227,6 +243,10 @@ export default function Sidebar({
                 )
 
                 await loadDocuments()
+
+                toast.success(
+                    `${getFileName(document)} deleted.`
+                )
 
                 if (
                     activeDocument === document
@@ -378,98 +398,51 @@ export default function Sidebar({
                     </h3>
 
                     {
+
                         documents.map(
                             (
-                                document,
-                                index
+                                document
                             ) => (
 
-                                <div  key={document} className="flex items-center justify-between gap-4">
-                                    <div
-                                        onClick={
-                                            async () => {
+                                <DocumentItem
 
-                                                setActiveDocument(
-                                                    document
-                                                )
+                                    key={
+                                        document
+                                    }
 
-                                                await loadDocumentInfo(
-                                                    document
-                                                )
+                                    document={
+                                        document
+                                    }
 
-                                            }
-                                        }
+                                    documentInfo={
+                                        documentInfo
+                                    }
 
-                                        className={`
-                                            w-full
-                                            flex
-                                            items-center
-                                            gap-3
-                                            p-3
-                                            rounded-xl
-                                            transition-all
-                                            cursor-pointer
+                                    activeDocument={
+                                        activeDocument
+                                    }
 
-                                            ${
-                                                activeDocument === document
-                                                ? "bg-blue-600 text-white"
-                                                : "text-slate-300 hover:bg-slate-800"
-                                            }
-                                        `}>
-                                        <span>
-                                            📄
-                                        </span>
+                                    setActiveDocument={
+                                        setActiveDocument
+                                    }
 
-                                        <span
-                                            className="
-                                                truncate
-                                            "
-                                        >
-                                            {
-                                                getFileName(document)
-                                            }
-                                        </span>
-                                    </div>
-                                
-                                    <Trash2
+                                    loadDocumentInfo={
+                                        loadDocumentInfo
+                                    }
 
-                                        size={16}
+                                    setConfirmModal={
+                                        setConfirmModal
+                                    }
 
-                                        onClick={(e) => {
+                                    handleDeleteDocument={
+                                        handleDeleteDocument
+                                    }
 
-                                            e.stopPropagation()
+                                    getFileName={
+                                        getFileName
+                                    }
 
-                                            setConfirmModal({
-
-                                                open: true,
-
-                                                title: "Delete Document",
-
-                                                message: `Delete "${getFileName(document)}"?`,
-
-                                                confirmText: "Delete",
-
-                                                danger: true,
-
-                                                onConfirm: async () => {
-
-                                                    await handleDeleteDocument(
-                                                        document
-                                                    )
-
-                                                }
-
-                                            })
-
-                                        }}
-
-                                        className="
-                                            text-slate-500
-                                            cursor-pointer
-                                            hover:text-red-400
-                                        "
-                                    />
-                                </div>
+                                />
 
                             )
                         )
@@ -520,377 +493,61 @@ export default function Sidebar({
                     sessions.map(
                         (session) => (
 
-                            <div
+                            <SessionItem
+
                                 key={
                                     session.session_id
                                 }
 
-                                onClick={
-                                    () =>
-                                    loadMessages(
-                                        session
-                                    )
+                                session={
+                                    session
                                 }
 
-                                className={`
-                                    p-3
-                                    rounded-xl
-                                    cursor-pointer
-                                    mb-2
-                                    transition-all
-
-                                    ${
-                                        selectedSession?.session_id === session.session_id
-                                            ? `
-                                                bg-blue-600/20
-                                                border
-                                                border-blue-500/30
-                                                text-white
-                                            `
-                                            : `
-                                                hover:bg-slate-800
-                                                text-slate-300
-                                            `
-                                    }
-                                `}>
-                                    
-                                <div
-                                    className="
-                                        flex
-                                        items-center
-                                        justify-between
-                                    "
-                                >
-
-                                    {
-                                        editingSession ===
-                                        session.session_id
-
-                                        ? (
-
-                                            <input
-
-                                                autoFocus
-
-                                                value={
-                                                    editedTitle
-                                                }
-
-                                                onChange={
-                                                    (e) =>
-                                                    setEditedTitle(
-                                                        e.target.value
-                                                    )
-                                                }
-
-                                                onBlur={
-                                                    () =>
-                                                    handleRename(
-                                                        session.session_id
-                                                    )
-                                                }
-
-                                                onKeyDown={
-                                                    (e) => {
-
-                                                        if (
-                                                            e.key === "Enter"
-                                                        ) {
-
-                                                            handleRename(
-                                                                session.session_id
-                                                            )
-
-                                                        }
-
-                                                    }
-                                                }
-
-                                                className="
-                                                    bg-slate-800
-                                                    text-white
-                                                    px-2
-                                                    py-1
-                                                    rounded
-                                                    w-full
-                                                "
-                                            />
-
-                                        )
-
-                                        : (
-
-                                            <span
-                                                onDoubleClick={
-                                                    () => {
-
-                                                        setEditingSession(
-                                                            session.session_id
-                                                        )
-
-                                                        setEditedTitle(
-                                                            session.title
-                                                        )
-
-                                                    }
-                                                }
-
-                                                className="
-                                                    text-sm
-                                                    truncate
-                                                    max-w-[180px]
-                                                "
-                                            >
-                                                {session.title}
-                                            </span>
-
-                                        )
-                                    }
-
-                                    {/* <Trash2
-
-                                        size={16}
-
-                                        onClick={
-                                            (e) => {
-
-                                                e.stopPropagation()
-
-                                                handleDelete(
-                                                    session.session_id
-                                                )
-                                            }
-                                        }
-
-                                        className="
-                                            opacity-0
-                                            group-hover:opacity-100
-                                            text-slate-500
-                                            hover:text-red-400
-                                            transition-all
-                                        "
-                                    /> */}
-
-                                    <div                                     
-                                        className="
-                                            relative
-                                        "
-                                    >
-
-                                        <MoreHorizontal
-
-                                            size={18}
-
-                                            onClick={
-                                                (e) => {
-
-                                                    e.stopPropagation()
-
-                                                    setOpenMenu(
-
-                                                        openMenu === session.session_id
-                                                            ? null
-                                                            : session.session_id
-
-                                                    )
-
-                                                }
-                                            }
-
-                                            className="
-                                                cursor-pointer
-                                                text-slate-500
-                                                hover:text-white
-                                            "
-                                        />
-
-                                        {
-                                            openMenu === session.session_id && (
-
-                                                <div
-                                                    className="
-                                                        absolute
-
-                                                        right-0
-                                                        top-8
-
-                                                        w-48
-
-                                                        bg-slate-900
-
-                                                        border
-                                                        border-slate-700
-
-                                                        rounded-2xl
-
-                                                        shadow-2xl
-
-                                                        overflow-hidden
-
-                                                        animate-in
-                                                        fade-in
-                                                        zoom-in-95
-
-                                                        z-50
-                                                    ">
-
-                                                    <button
-
-                                                        onClick={
-                                                            (e) => {
-
-                                                                e.stopPropagation()
-
-                                                                setEditingSession(
-                                                                    session.session_id
-                                                                )
-
-                                                                setEditedTitle(
-                                                                    session.title
-                                                                )
-
-                                                                setOpenMenu(
-                                                                    null
-                                                                )
-
-                                                            }
-                                                        }
-
-                                                        className="
-                                                            w-full
-
-                                                            flex
-                                                            items-center
-                                                            justify-between
-
-                                                            px-4
-                                                            py-3
-
-                                                            text-sm
-
-                                                            text-slate-300
-
-                                                            hover:bg-slate-800
-                                                            hover:text-white
-
-                                                            transition-all
-                                                        "
-                                                    >
-
-                                                        <div
-                                                            className="
-                                                                flex
-                                                                items-center
-                                                                gap-3
-                                                            "
-                                                        >
-
-                                                            <Pencil
-                                                                size={16}
-                                                            />
-
-                                                            <span>
-                                                                Rename
-                                                            </span>
-
-                                                        </div>
-
-                                                        <ChevronRight
-                                                            size={15}
-                                                        />
-
-                                                    </button>
-
-                                                    <button
-
-                                                        onClick={
-                                                            (e) => {
-
-                                                                e.stopPropagation()
-
-                                                                setOpenMenu(
-                                                                    null
-                                                                )
-
-                                                                setConfirmModal({
-
-                                                                    open: true,
-
-                                                                    title: "Delete Session",
-
-                                                                    message: `Are you sure you want to delete "${session.title}"?\n\nThis action cannot be undone.`,
-
-                                                                    confirmText: "Delete",
-
-                                                                    danger: true,
-
-                                                                    onConfirm: async () => {
-
-                                                                        await handleDelete(
-                                                                            session.session_id
-                                                                        )
-
-                                                                    }
-
-                                                                })
-
-                                                            }
-                                                        }
-
-                                                        className="
-                                                            w-full
-
-                                                            flex
-                                                            items-center
-                                                            justify-between
-
-                                                            px-4
-                                                            py-3
-
-                                                            text-sm
-
-                                                            text-red-400
-
-                                                            hover:bg-red-500/10
-
-                                                            transition-all
-                                                        "
-                                                    >
-
-                                                        <div
-                                                            className="
-                                                                flex
-                                                                items-center
-                                                                gap-3
-                                                            "
-                                                        >
-
-                                                            <Trash2
-                                                                size={16}
-                                                            />
-
-                                                            <span>
-                                                                Delete
-                                                            </span>
-
-                                                        </div>
-
-                                                        <ChevronRight
-                                                            size={15}
-                                                        />
-
-                                                    </button>
-
-                                                </div>
-
-                                            )
-                                        }
-
-                                    </div>
-
-                                </div>
-
-                            </div>
+                                selectedSession={
+                                    selectedSession
+                                }
+
+                                loadMessages={
+                                    loadMessages
+                                }
+
+                                editingSession={
+                                    editingSession
+                                }
+
+                                editedTitle={
+                                    editedTitle
+                                }
+
+                                setEditedTitle={
+                                    setEditedTitle
+                                }
+
+                                setEditingSession={
+                                    setEditingSession
+                                }
+
+                                handleRename={
+                                    handleRename
+                                }
+
+                                handleDelete={
+                                    handleDelete
+                                }
+
+                                openMenu={
+                                    openMenu
+                                }
+
+                                setOpenMenu={
+                                    setOpenMenu
+                                }
+
+                                setConfirmModal={
+                                    setConfirmModal
+                                }
+
+                            />
 
                         )
                     )
@@ -900,53 +557,6 @@ export default function Sidebar({
 
 
             {/* confirm modal */}
-
-            {/* <ConfirmModal
-
-                open={
-                    confirmDelete
-                }
-
-                title="Delete Session"
-
-                message={`
-                Are you sure you want to delete
-                "${sessionToDelete?.title}"?
-
-                This action cannot be undone.
-                `}
-
-                    confirmText="Delete"
-
-                    danger={true}
-
-                    onCancel={
-                        () =>
-                        setConfirmDelete(
-                            false
-                        )
-                    }
-
-                    onConfirm={
-                        async () => {
-
-                            await handleDelete(
-                                sessionToDelete.session_id
-                            )
-
-                            setConfirmDelete(
-                                false
-                            )
-
-                            setSessionToDelete(
-                                null
-                            )
-
-                        }
-                    }
-
-            /> */}
-
 
             <ConfirmModal
 
