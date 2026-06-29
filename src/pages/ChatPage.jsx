@@ -6,6 +6,7 @@ import MessageInput from "../components/MessageInput"
 import {
     getSessions,
     sendMessage,
+    sendMessageStream
 } from "../services/api"
 
 import {
@@ -205,35 +206,87 @@ export default function ChatPage() {
                         activeDocument
                 }
 
-                const response =
-                    await sendMessage(
-                        payload
-                    )
+                // const response =
+                //     await sendMessage(
+                //         payload
+                //     )
 
-                setLoading(false)
+                // setLoading(false)
 
-                const aiMessage = {
+                // const aiMessage = {
 
-                    role: "ai",
+                //     role: "ai",
 
-                    content:
-                        response.data.answer,
+                //     content:
+                //         response.data.answer,
 
-                    sources:
-                        response.data.sources || []
+                //     sources:
+                //         response.data.sources || []
 
-                }
+                // }
 
-                console.log(
-                    aiMessage
-                )
+                // console.log(
+                //     aiMessage
+                // )
+
+                // setMessages(
+                //     prev => [
+                //         ...prev,
+                //         aiMessage
+                //     ]
+                // )
+
+                let aiResponse = ""
 
                 setMessages(
                     prev => [
+
                         ...prev,
-                        aiMessage
+
+                        {
+                            role: "ai",
+                            content: ""
+                        }
+
                     ]
                 )
+
+                await sendMessageStream(
+
+                    payload,
+
+                    (chunk) => {
+
+                        aiResponse += chunk
+
+                        setMessages(
+                            prev => {
+
+                                const updated = [...prev]
+
+                                updated[
+                                    updated.length - 1
+                                ] = {
+
+                                    ...updated[
+                                        updated.length - 1
+                                    ],
+
+                                    content:
+                                        aiResponse
+
+                                }
+
+                                return updated
+
+                            }
+                        )
+
+                    }
+
+                )
+
+                setLoading(false)
 
                 await loadSessions()
 
