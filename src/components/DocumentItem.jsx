@@ -26,7 +26,12 @@ export default function DocumentItem({
 
     return (
 
-        <div  key={document} className="flex items-center justify-between gap-4">
+        <div  key={document} 
+            className="        
+            flex
+            items-center
+            gap-3
+            w-full">
             <div
                 onClick={
                     async () => {
@@ -43,7 +48,9 @@ export default function DocumentItem({
                 }
 
                 className={`
-                    w-full
+                     flex-1
+                    min-w-0
+
                     flex
                     items-center
                     gap-3
@@ -64,7 +71,10 @@ export default function DocumentItem({
 
                 <span
                     className="
+                        flex-1
+                        min-w-0
                         truncate
+                        text-sm
                     "
                 >
                     {
@@ -106,9 +116,15 @@ export default function DocumentItem({
                 }}
 
                 className="
+                    shrink-0
+
                     text-slate-500
+
                     cursor-pointer
+
                     hover:text-red-400
+
+                    transition-colors
                 "
             />
         </div>
