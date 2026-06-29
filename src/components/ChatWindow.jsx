@@ -16,7 +16,9 @@ export default function ChatWindow({
     activeDocument,
     selectedSession,
     setActiveDocument,
-    documentInfo
+    documentInfo,
+
+    onRegenerate
 }) {
 
     console.log(documentInfo)
@@ -307,6 +309,14 @@ export default function ChatWindow({
 
                                 sources={
                                     message.sources || []
+                                }
+
+                                onRegenerate={() =>
+
+                                    onRegenerate(
+                                        index
+                                    )
+
                                 }
                             />
 

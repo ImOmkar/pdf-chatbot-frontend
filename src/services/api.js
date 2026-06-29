@@ -100,7 +100,7 @@ export const uploadPdf =
 export const sendMessageStream =
     async (
         payload,
-        onChunk
+        onEvent
     ) => {
 
         const response =
@@ -119,9 +119,10 @@ export const sendMessageStream =
 
                     },
 
-                    body: JSON.stringify(
-                        payload
-                    )
+                    body:
+                        JSON.stringify(
+                            payload
+                        )
 
                 }
 
@@ -133,11 +134,16 @@ export const sendMessageStream =
         const decoder =
             new TextDecoder()
 
+        let buffer = ""
+
         while (true) {
 
             const {
+
                 done,
+
                 value
+
             } =
                 await reader.read()
 
@@ -147,15 +153,55 @@ export const sendMessageStream =
 
             }
 
-            onChunk(
-
+            buffer +=
                 decoder.decode(
-                    value
+                    value,
+                    {
+                        stream: true
+                    }
                 )
 
-            )
+            const events =
+                buffer.split(
+                    "\n\n"
+                )
+
+            buffer =
+                events.pop()
+
+            for (
+                const event
+                of events
+            ) {
+
+                if (
+                    !event.startsWith(
+                        "data: "
+                    )
+                ) {
+
+                    continue
+
+                }
+
+                const json =
+                    JSON.parse(
+
+                        event.replace(
+                            "data: ",
+                            ""
+                        )
+
+                    )
+
+                onEvent(
+                    json
+                )
+
+            }
 
         }
 
     }
+    
 export default api

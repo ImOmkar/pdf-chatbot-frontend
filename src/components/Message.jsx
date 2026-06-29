@@ -1,15 +1,25 @@
+import {
+    useState
+}
+from "react"
 import ReactMarkdown
 from "react-markdown"
 import {
     Send,
     BookOpen,
-    FileText
+    FileText,
+    Copy, 
+    Check,
+    RotateCcw
 }
 from "lucide-react"
 import {
     Prism as SyntaxHighlighter
 }
 from "react-syntax-highlighter"
+
+import toast
+from "react-hot-toast"
 
 import {
     oneDark
@@ -19,24 +29,65 @@ from "react-syntax-highlighter/dist/esm/styles/prism"
 export default function Message({
     role,
     content,
-    sources
+    sources,
+    onRegenerate
 }) {
+
+    const [copied, setCopied] = useState(false)
 
     const isUser =
         role === "user"
 
 
     console.log(sources)
+
+
+    const handleCopy =
+    async () => {
+
+        try {
+
+            await navigator.clipboard.writeText(
+                content
+            )
+
+            setCopied(
+                true
+            )
+
+            toast.success(
+                "Copied to clipboard."
+            )
+
+            setTimeout(
+                () =>
+                    setCopied(
+                        false
+                    ),
+                2000
+            )
+
+        }
+
+        catch {
+
+            toast.error(
+                "Couldn't copy."
+            )
+
+        }
+
+    }
         
 
     return (
 
         <div
             className={`
+                group
+
                 flex
                 mb-4
-                items-start
-                gap-3
 
                 ${
                     isUser
@@ -69,9 +120,11 @@ export default function Message({
 
             <div
                 className={`
+                    relative
                     max-w-[80%]
-                    px-4
-                    py-3
+                    px-5
+                    py-4
+   
                     rounded-2xl
                     text-white
 
@@ -80,8 +133,7 @@ export default function Message({
                         ? "bg-blue-600"
                         : "bg-slate-800"
                     }
-                `}
-            >
+                `}>
 
                 <ReactMarkdown
                     components={{
@@ -253,7 +305,100 @@ export default function Message({
                     )
                 }
 
-                </div>
+                                {
+                    !isUser && (
+
+                        <div
+                            className="
+                                
+                                top-2
+                                right-3
+                                
+                                flex
+                                justify-end
+                                items-center
+                                gap-1
+                                
+                                opacity-0
+                                group-hover:opacity-100
+
+                                transition-all
+                            "
+                        >
+
+                            <button
+
+                                onClick={handleCopy}
+
+                                title="Copy"
+
+                                className="
+                                    h-8
+                                    w-8
+
+                                    rounded-lg
+
+                                    flex
+                                    items-center
+                                    justify-center
+
+                                    text-slate-400
+
+                                    hover:text-white
+                                    hover:bg-slate-700
+
+                                    transition-all
+                                "
+                            >
+
+                                {
+                                    copied
+
+                                    ? <Check size={16}/>
+
+                                    : <Copy size={16}/>
+                                }
+
+                            </button>
+
+                            <button
+
+                                onClick={onRegenerate}
+
+                                title="Regenerate"
+
+                                className="
+                                    h-8
+                                    w-8
+
+                                    rounded-lg
+
+                                    flex
+                                    items-center
+                                    justify-center
+
+                                    text-slate-400
+
+                                    hover:text-white
+                                    hover:bg-slate-700
+
+                                    transition-all
+                                "
+                            >
+
+                                <RotateCcw
+                                    size={16}
+                                />
+
+                            </button>
+
+                        </div>
+
+                    )
+                }
+
+            </div>
+
 
             {
                 isUser && (
@@ -275,6 +420,7 @@ export default function Message({
 
                 )
             }
+
 
         </div>
 

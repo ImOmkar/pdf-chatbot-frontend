@@ -149,94 +149,70 @@ export default function ChatPage() {
 
         }
 
-    const handleSend =
-        async () => {
+    const streamResponse =
+        async (
+            question,
+            replaceMessageIndex = null
+        ) => {
 
-            if (loading) {
-                return
+            setLoading(true)
+
+            const payload = {
+
+                session_id:
+                    selectedSession.session_id,
+
+                question
+
             }
+
+            if (activeDocument) {
+
+                payload.document =
+                    activeDocument
+
+            }
+
+            const getAIIndex =
+                (updated) =>
+
+                    replaceMessageIndex !== null
+
+                        ? replaceMessageIndex
+
+                        : updated.length - 1
+
+            let aiResponse = ""
 
             if (
-                !input.trim()
+                replaceMessageIndex !== null
             ) {
-                return
-            }
-
-            if (
-                !selectedSession
-            ) {
-                alert(
-                    "Select a session"
-                )
-                return
-            }
-
-            try {
-
-                setLoading(true)
-
-                const userMessage = {
-                    role: "human",
-                    content: input
-                }
 
                 setMessages(
-                    prev => [
-                        ...prev,
-                        userMessage
-                    ]
+                    prev => {
+
+                        const updated = [...prev]
+
+                        updated[
+                            getAIIndex(updated)
+                        ] = {
+
+                            role: "ai",
+
+                            content: "",
+
+                            sources: []
+
+                        }
+
+                        return updated
+
+                    }
                 )
 
-                const question =
-                    input
+            }
 
-                setInput("")
-
-                const payload = {
-
-                    session_id:
-                        selectedSession.session_id,
-
-                    question
-                }
-
-                if (activeDocument) {
-
-                    payload.document =
-                        activeDocument
-                }
-
-                // const response =
-                //     await sendMessage(
-                //         payload
-                //     )
-
-                // setLoading(false)
-
-                // const aiMessage = {
-
-                //     role: "ai",
-
-                //     content:
-                //         response.data.answer,
-
-                //     sources:
-                //         response.data.sources || []
-
-                // }
-
-                // console.log(
-                //     aiMessage
-                // )
-
-                // setMessages(
-                //     prev => [
-                //         ...prev,
-                //         aiMessage
-                //     ]
-                // )
-
-                let aiResponse = ""
+            else {
 
                 setMessages(
                     prev => [
@@ -244,20 +220,32 @@ export default function ChatPage() {
                         ...prev,
 
                         {
+
                             role: "ai",
-                            content: ""
+
+                            content: "",
+
+                            sources: []
+
                         }
 
                     ]
                 )
 
-                await sendMessageStream(
+            }
 
-                    payload,
+            await sendMessageStream(
 
-                    (chunk) => {
+                payload,
 
-                        aiResponse += chunk
+                (event) => {
+
+                    if (
+                        event.type === "chunk"
+                    ) {
+
+                        aiResponse +=
+                            event.content
 
                         setMessages(
                             prev => {
@@ -265,11 +253,11 @@ export default function ChatPage() {
                                 const updated = [...prev]
 
                                 updated[
-                                    updated.length - 1
+                                    getAIIndex(updated)
                                 ] = {
 
                                     ...updated[
-                                        updated.length - 1
+                                        getAIIndex(updated)
                                     ],
 
                                     content:
@@ -284,13 +272,94 @@ export default function ChatPage() {
 
                     }
 
+                    else if (
+                        event.type === "done"
+                    ) {
+
+                        setMessages(
+                            prev => {
+
+                                const updated = [...prev]
+
+                                updated[
+                                    getAIIndex(updated)
+                                ] = {
+
+                                    ...updated[
+                                        getAIIndex(updated)
+                                    ],
+
+                                    sources:
+                                        event.sources || []
+
+                                }
+
+                                return updated
+
+                            }
+                        )
+
+                        setLoading(false)
+
+                    }
+
+                }
+
+            )
+
+        }
+
+    const handleSend =
+        async () => {
+
+            if (loading) {
+                return
+            }
+
+            if (!input.trim()) {
+                return
+            }
+
+            if (!selectedSession) {
+
+                alert(
+                    "Select a session"
                 )
 
-                setLoading(false)
+                return
+
+            }
+
+            try {
+
+                const question = input
+
+                setMessages(
+                    prev => [
+
+                        ...prev,
+
+                        {
+
+                            role: "human",
+
+                            content: question
+
+                        }
+
+                    ]
+                )
+
+                setInput("")
+
+                await streamResponse(
+                    question
+                )
 
                 await loadSessions()
 
             }
+
             catch(error) {
 
                 setLoading(false)
@@ -311,13 +380,12 @@ export default function ChatPage() {
 
                 if (
                     error.response?.data?.detail
-                        ?.includes(
-                            "429"
-                        )
-                )
-                {
+                        ?.includes("429")
+                ) {
+
                     errorMessage =
                         "Daily Gemini limit reached. Try again later."
+
                 }
 
                 setMessages(
@@ -326,15 +394,50 @@ export default function ChatPage() {
                         ...prev,
 
                         {
+
                             role: "ai",
+
                             content:
                                 `❌ ${errorMessage}`
+
                         }
 
                     ]
                 )
 
             }
+
+        }
+
+    const handleRegenerate =
+        async (
+            messageIndex
+        ) => {
+
+            if (loading) {
+                return
+            }
+
+            const userMessage =
+                messages[
+                    messageIndex - 1
+                ]
+
+            if (
+                !userMessage ||
+                userMessage.role !== "human"
+            ) {
+                return
+            }
+
+            await streamResponse(
+
+                userMessage.content,
+
+                messageIndex
+
+            )
+
         }
 
     return (
@@ -411,6 +514,9 @@ export default function ChatPage() {
                                 }
                                 setActiveDocument={
                                     setActiveDocument
+                                }
+                                onRegenerate={
+                                    handleRegenerate
                                 }
                             />
 
