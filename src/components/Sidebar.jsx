@@ -86,7 +86,7 @@ export default function Sidebar({
 
     })
 
-    const menuRef = useRef(null)
+    const sidebarRef = useRef(null)
 
     const getFileName =
         (path) =>
@@ -254,8 +254,8 @@ export default function Sidebar({
                 (event) => {
 
                     if (
-                        menuRef.current &&
-                        !menuRef.current.contains(
+                        sidebarRef.current &&
+                        !sidebarRef.current.contains(
                             event.target
                         )
                     ) {
@@ -289,6 +289,7 @@ export default function Sidebar({
     return (
 
         <div
+            ref={sidebarRef}
             className="
                 w-80
                 bg-slate-950
@@ -670,8 +671,7 @@ export default function Sidebar({
                                         "
                                     /> */}
 
-                                    <div
-                                        ref={menuRef}
+                                    <div                                     
                                         className="
                                             relative
                                         "

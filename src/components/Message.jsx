@@ -1,7 +1,9 @@
 import ReactMarkdown
 from "react-markdown"
 import {
-    Send
+    Send,
+    BookOpen,
+    FileText
 }
 from "lucide-react"
 import {
@@ -22,6 +24,9 @@ export default function Message({
 
     const isUser =
         role === "user"
+
+
+    console.log(sources)
         
 
     return (
