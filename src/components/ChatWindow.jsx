@@ -1,14 +1,19 @@
 import {
     useEffect,
-    useRef
+    useRef,
+    useState
 }
 from "react"
 import Message from "./Message"
 import {
     FileText,
-    X
+    X,
+    Download
 }
 from "lucide-react"
+
+import ExportMenu
+from "./ExportMenu"
 
 export default function ChatWindow({
     messages,
@@ -18,10 +23,19 @@ export default function ChatWindow({
     setActiveDocument,
     documentInfo,
 
-    onRegenerate
+    onRegenerate,
+    onSuggestionClick,
+    onExport,
+    onViewSource
 }) {
 
-    console.log(documentInfo)
+    const [
+        showExportMenu,
+        setShowExportMenu
+    ] = useState(false)
+
+    const exportMenuRef =
+        useRef(null)
 
     const bottomRef = useRef(null)
 
@@ -38,6 +52,48 @@ export default function ChatWindow({
         [messages, loading]
     )
 
+    useEffect(
+        () => {
+
+            const handler =
+                (event) => {
+
+                    if (
+
+                        exportMenuRef.current &&
+
+                        !exportMenuRef.current.contains(
+                            event.target
+                        )
+
+                    ) {
+
+                        setShowExportMenu(
+                            false
+                        )
+
+                    }
+
+                }
+
+            document.addEventListener(
+                "mousedown",
+                handler
+            )
+
+            return () =>
+
+                document.removeEventListener(
+                    "mousedown",
+                    handler
+                )
+
+        },
+
+        []
+
+    )
+
 
     return (
 
@@ -49,6 +105,9 @@ export default function ChatWindow({
         >
             <div
                 className="
+                    flex
+                    items-center
+                    justify-between
                     border-b
                     border-slate-800
                     p-4
@@ -66,6 +125,74 @@ export default function ChatWindow({
                         || "New Chat"
                     }
                 </h2>
+
+                <div
+                    className="
+                        relative
+                    "
+
+                    ref={exportMenuRef}
+                >
+
+                    <button
+
+                        onClick={
+                            () =>
+
+                                setShowExportMenu(
+                                    prev => !prev
+                                )
+                        }
+
+                        className="
+                            h-9
+                            w-9
+
+                            rounded-lg
+
+                            flex
+                            items-center
+                            justify-center
+
+                            text-slate-400
+
+                            hover:text-white
+
+                            hover:bg-slate-800
+
+                            transition-all
+                        "
+                    >
+
+                        <Download
+                            size={18}
+                        />
+
+                    </button>
+
+                    {
+                        showExportMenu && (
+
+                            <ExportMenu
+
+                                onExport={
+                                    () => {
+
+                                        setShowExportMenu(
+                                            false
+                                        )
+
+                                        onExport()
+
+                                    }
+                                }
+
+                            />
+
+                        )
+                    }
+
+                </div>
 
             </div>
 
@@ -224,6 +351,14 @@ export default function ChatWindow({
 
                                     suggestions={
                                         message.suggestions || []
+                                    }
+
+                                    onSuggestionClick={
+                                        onSuggestionClick
+                                    }
+
+                                    onViewSource={
+                                        onViewSource
                                     }
                                 />
 

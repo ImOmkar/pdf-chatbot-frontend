@@ -1,4 +1,9 @@
 import {
+    Search
+}
+from "lucide-react"
+
+import {
     useState,
     useRef,
     useEffect
@@ -85,6 +90,13 @@ export default function Sidebar({
         onConfirm: null
 
     })
+
+    const [
+        search,
+        setSearch
+    ] = useState("")
+
+    const searchInputRef = useRef(null)
 
     const sidebarRef = useRef(null)
 
@@ -266,6 +278,69 @@ export default function Sidebar({
             }
 
         }
+
+
+    const filteredSessions =
+
+        sessions.filter(
+
+            session =>
+
+                session.title
+
+                    .toLowerCase()
+
+                    .includes(
+
+                        search.toLowerCase()
+
+                    )
+
+        )
+
+
+    useEffect(
+        () => {
+
+            const handler =
+                (e) => {
+
+                    if (
+
+                        e.ctrlKey &&
+
+                        e.key.toLowerCase() === "k"
+
+                    ) {
+
+                        e.preventDefault()
+
+                        searchInputRef.current?.focus()
+
+                    }
+
+                }
+
+            window.addEventListener(
+                "keydown",
+                handler
+            )
+
+            return () =>
+
+                window.removeEventListener(
+
+                    "keydown",
+
+                    handler
+
+                )
+
+        },
+
+        []
+
+    )
 
     useEffect(
         () => {
@@ -489,8 +564,130 @@ export default function Sidebar({
                     Conversations
                 </h3>
 
+                <div
+                    className="
+                        relative
+                        mb-4
+                    ">
+
+                    <Search
+
+                        size={16}
+
+                        className="
+                            absolute
+
+                            left-3
+
+                            top-1/2
+
+                            -translate-y-1/2
+
+                            text-slate-500
+                        "
+                    />
+
+                    <input
+
+                        ref={searchInputRef}
+
+                        value={search}
+
+                        onChange={
+                            e =>
+
+                                setSearch(
+                                    e.target.value
+                                )
+                        }
+
+                        placeholder="Search chats..."
+
+                        className="
+                            w-full
+
+                            h-10
+
+                            pl-10
+                            pr-3
+
+                            rounded-xl
+
+                            bg-slate-900
+
+                            border
+                            border-slate-800
+
+                            text-white
+
+                            placeholder:text-slate-500
+
+                            outline-none
+
+                            transition-all
+
+                            focus:border-blue-500
+
+                            focus:ring-1
+
+                            focus:ring-blue-500
+                        "
+                    />
+
+                    <span
+                        className="
+                            absolute
+
+                            right-3
+
+                            top-1/2
+
+                            -translate-y-1/2
+
+                            text-[10px]
+
+                            text-slate-500
+
+                            pointer-events-none
+                        "
+                    >
+                        Ctrl K
+                    </span>
+
+                </div>
+
                 {
-                    sessions.map(
+                    filteredSessions.length === 0
+
+                    ? (
+
+                        <div
+                            className="
+                                py-8
+                                text-center
+                                text-slate-500
+                            "
+                        >
+
+                            <Search
+                                size={28}
+                                className="
+                                    mx-auto
+                                    mb-3
+                                "
+                            />
+
+                            <p>
+                                No conversations found
+                            </p>
+
+                        </div>
+
+                    )
+
+                : (
+                    
+                    filteredSessions.map(
                         (session) => (
 
                             <SessionItem
@@ -551,7 +748,8 @@ export default function Sidebar({
 
                         )
                     )
-                }
+                )
+            }
 
             </div>
 

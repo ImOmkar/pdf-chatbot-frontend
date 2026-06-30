@@ -95,7 +95,34 @@ export const uploadPdf =
 
 
 
+export const exportChat =
+    async (
+        sessionId,
+        format = "txt"
+    ) => {
 
+        const response =
+            await axios.get(
+
+                `http://127.0.0.1:8000/sessions/${sessionId}/export`,
+
+                {
+
+                    params: {
+
+                        format
+
+                    },
+
+                    responseType: "blob"
+
+                }
+
+            )
+
+        return response
+
+    }
 
 export const sendMessageStream =
     async (
@@ -207,4 +234,30 @@ export const sendMessageStream =
 
     }
     
+
+
+export const getSourceDetails =
+    (
+        document,
+        page
+    ) =>
+
+        api.get(
+
+            "/source",
+
+            {
+
+                params: {
+
+                    document,
+
+                    page
+
+                }
+
+            }
+
+        )
+        
 export default api

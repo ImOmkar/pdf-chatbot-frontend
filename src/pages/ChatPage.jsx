@@ -12,9 +12,14 @@ import {
 import {
     uploadPdf,
     getDocuments,
-    getDocumentInfo
+    getDocumentInfo,
+    exportChat,
+    getSourceDetails
 }
 from "../services/api"
+
+import SourceViewerModal
+from "../components/SourceViewerModal"
 
 import WelcomeScreen
 from "../components/WelcomeScreen"
@@ -40,6 +45,26 @@ export default function ChatPage() {
     const [activeDocument, setActiveDocument] = useState(null)
 
     const [documentInfo, setDocumentInfo] = useState(null)
+
+    const [
+
+        selectedSource,
+
+        setSelectedSource
+
+    ] = useState(
+        null
+    )
+
+    const [
+
+        sourceViewerOpen,
+
+        setSourceViewerOpen
+
+    ] = useState(
+        false
+    )
 
     const [loading, setLoading] = useState(false)
     
@@ -306,105 +331,126 @@ export default function ChatPage() {
 
     }
 
-    const handleSend =
-        async () => {
+    const sendQuestion =
+    async (
+        question
+    ) => {
 
-            if (loading) {
-                return
-            }
+        if (loading) {
+            return
+        }
 
-            if (!input.trim()) {
-                return
-            }
+        if (!selectedSession) {
+            return
+        }
 
-            if (!selectedSession) {
+        try {
 
-                alert(
-                    "Select a session"
-                )
+            setMessages(
+                prev => [
 
-                return
+                    ...prev,
 
-            }
+                    {
 
-            try {
+                        role: "human",
 
-                const question = input
+                        content: question
 
-                setMessages(
-                    prev => [
+                    }
 
-                        ...prev,
+                ]
+            )
 
-                        {
+            await streamResponse({
 
-                            role: "human",
+                question
 
-                            content: question
+            })
 
-                        }
-
-                    ]
-                )
-
-                setInput("")
-
-                await streamResponse({
-                    question
-                })
-
-                await loadSessions()
-
-            }
-
-            catch(error) {
-
-                setLoading(false)
-
-                console.log(error)
-
-                let errorMessage =
-                    "Something went wrong."
-
-                if (
-                    error.response?.data?.detail
-                ) {
-
-                    errorMessage =
-                        error.response.data.detail
-
-                }
-
-                if (
-                    error.response?.data?.detail
-                        ?.includes("429")
-                ) {
-
-                    errorMessage =
-                        "Daily Gemini limit reached. Try again later."
-
-                }
-
-                setMessages(
-                    prev => [
-
-                        ...prev,
-
-                        {
-
-                            role: "ai",
-
-                            content:
-                                `❌ ${errorMessage}`
-
-                        }
-
-                    ]
-                )
-
-            }
+            await loadSessions()
 
         }
+
+        catch (error) {
+
+            setLoading(false)
+
+            console.log(error)
+
+            let errorMessage =
+                "Something went wrong."
+
+            if (
+                error.response?.data?.detail
+            ) {
+
+                errorMessage =
+                    error.response.data.detail
+
+            }
+
+            if (
+                error.response?.data?.detail
+                    ?.includes("429")
+            ) {
+
+                errorMessage =
+                    "Daily Gemini limit reached. Try again later."
+
+            }
+
+            setMessages(
+                prev => [
+
+                    ...prev,
+
+                    {
+
+                        role: "ai",
+
+                        content:
+                            `❌ ${errorMessage}`
+
+                    }
+
+                ]
+            )
+
+        }
+
+    }
+
+    const handleSend =
+    async () => {
+
+        if (loading) {
+            return
+        }
+
+        if (!input.trim()) {
+            return
+        }
+
+        if (!selectedSession) {
+
+            alert(
+                "Select a session"
+            )
+
+            return
+
+        }
+
+        const question = input.trim()
+
+        setInput("")
+
+        await sendQuestion(
+            question
+        )
+
+    }
 
     const handleRegenerate =
         async (
@@ -460,6 +506,17 @@ export default function ChatPage() {
 
         }
 
+    const handleSuggestionClick =
+        async (
+            suggestion
+        ) => {
+
+            await sendQuestion(
+                suggestion
+            )
+
+        }
+
     const handleStop =
         () => {
 
@@ -470,6 +527,149 @@ export default function ChatPage() {
             setLoading(false)
 
         }
+
+
+    const handleExport =
+    async () => {
+
+        if (
+            !selectedSession
+        ) {
+
+            return
+
+        }
+
+        try {
+
+            const response =
+
+                await exportChat(
+
+                    selectedSession.session_id,
+
+                    "txt"
+
+                )
+
+            const blob =
+
+                new Blob(
+
+                    [response.data],
+
+                    {
+
+                        type: "text/plain"
+
+                    }
+
+                )
+
+            const url =
+                window.URL.createObjectURL(
+                    blob
+                )
+
+            const link =
+                document.createElement(
+                    "a"
+                )
+
+            link.href = url
+
+            const disposition =
+
+                response.headers[
+                    "content-disposition"
+                ]
+
+            const filename =
+
+                disposition
+                    ?.split("filename=")[1]
+                    ?.replaceAll('"', "")
+
+                ||
+
+                "Conversation.txt"
+
+            link.download = filename
+
+            link.click()
+
+            window.URL.revokeObjectURL(
+                url
+            )
+
+        }
+
+        catch (error) {
+
+            console.log(error)
+
+            toast.error(
+                "Export failed."
+            )
+
+        }
+
+    }
+
+    const handleViewSource =
+    async (
+
+        document,
+
+        page
+
+    ) => {
+
+        try {
+
+            const response =
+
+                await getSourceDetails(
+
+                    document,
+
+                    page
+
+                )
+
+            setSelectedSource(
+
+                response.data
+
+            )
+
+            setSourceViewerOpen(
+
+                true
+
+            )
+
+        }
+
+        catch (
+
+            error
+
+        ) {
+
+            console.log(
+                error
+            )
+
+            toast.error(
+
+                "Unable to load source."
+
+            )
+
+        }
+
+    }
 
     return (
 
@@ -549,6 +749,15 @@ export default function ChatPage() {
                                 onRegenerate={
                                     handleRegenerate
                                 }
+                                onSuggestionClick={
+                                    handleSuggestionClick
+                                }
+                                onExport={
+                                    handleExport
+                                }
+                                onViewSource={
+                                    handleViewSource
+                                }
                             />
 
                             <MessageInput
@@ -569,6 +778,26 @@ export default function ChatPage() {
                 }
 
             </div>
+
+            <SourceViewerModal
+
+                open={
+                    sourceViewerOpen
+                }
+
+                source={
+                    selectedSource
+                }
+
+                onClose={
+                    () =>
+
+                        setSourceViewerOpen(
+                            false
+                        )
+                }
+
+            />
 
         </div>
     )

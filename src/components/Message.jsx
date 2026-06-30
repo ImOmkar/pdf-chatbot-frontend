@@ -34,6 +34,8 @@ export default function Message({
     sources,
     completed = true,
     onRegenerate,
+    onSuggestionClick,
+    onViewSource
 
 }) {
 
@@ -242,9 +244,23 @@ export default function Message({
                                             index
                                         ) => (
 
-                                            <div
+                                            <button
 
                                                 key={index}
+
+                                                type="button"
+
+                                                onClick={() =>
+
+                                                    onViewSource(
+
+                                                        source.document,
+
+                                                        source.page
+
+                                                    )
+
+                                                }
 
                                                 className="
                                                     bg-slate-900
@@ -258,6 +274,13 @@ export default function Message({
                                                     py-2
 
                                                     min-w-[180px]
+
+                                                    text-left
+
+                                                    hover:border-blue-500
+                                                    hover:bg-slate-800
+
+                                                    transition-all
                                                 "
                                             >
 
@@ -276,9 +299,7 @@ export default function Message({
                                                         size={15}
                                                     />
 
-                                                    {
-                                                        source.document
-                                                    }
+                                                    {source.document}
 
                                                 </div>
 
@@ -296,7 +317,7 @@ export default function Message({
 
                                                 </div>
 
-                                            </div>
+                                            </button>
 
                                         )
 
@@ -310,6 +331,98 @@ export default function Message({
                     )
                 }
 
+
+                {/* suggestion chips */}
+                {
+                    !isUser &&
+
+                    completed &&
+
+                    suggestions.length > 0 && (
+
+                        <div
+                            className="
+                                mt-4
+                            "
+                        >
+
+                            <p
+                                className="
+                                    text-xs
+                                    text-slate-500
+                                    mb-3
+                                "
+                            >
+                                Suggested follow-ups
+                            </p>
+
+                            <div
+                                className="
+                                    flex
+                                    flex-wrap
+                                    gap-2
+                                "
+                            >
+
+                                {
+                                    suggestions.map(
+
+                                        (
+                                            suggestion,
+                                            index
+                                        ) => (
+
+                                            <button
+
+                                                key={index}
+
+                                                onClick={() =>
+
+                                                    onSuggestionClick(
+                                                        suggestion
+                                                    )
+
+                                                }
+
+                                                className="
+                                                    px-4
+                                                    py-2
+
+                                                    rounded-full
+
+                                                    bg-slate-800
+
+                                                    border
+                                                    border-slate-700
+
+                                                    text-sm
+                                                    text-slate-300
+
+                                                    hover:bg-slate-700
+                                                    hover:border-blue-500
+                                                    hover:text-white
+
+                                                    transition-all
+                                                "
+                                            >
+
+                                                {suggestion}
+
+                                            </button>
+
+                                        )
+
+                                    )
+                                }
+
+                            </div>
+
+                        </div>
+
+                    )
+                }
+
+                                {/* copy and regenerate button */}
                 {
                     !isUser && (
 
@@ -408,8 +521,9 @@ export default function Message({
                 }
 
             </div>
+            
 
-
+            {/* user */}
             {
                 isUser && (
 
