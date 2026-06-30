@@ -76,116 +76,6 @@ export default function ChatWindow({
                     px-6
                 ">
 
-                {/* {
-                    activeDocument && (
-
-                        <div
-                            className="
-                                mb-6
-
-                                bg-slate-900
-                                border
-                                border-blue-500/30
-
-                                rounded-2xl
-
-                                px-5
-                                py-4
-
-                                flex
-                                items-center
-                                justify-between
-                            "
-                        >
-
-                            <div
-                                className="
-                                    flex
-                                    items-center
-                                    gap-4
-                                "
-                            >
-
-                                <div
-                                    className="
-                                        h-10
-                                        w-10
-
-                                        rounded-xl
-
-                                        bg-blue-600/20
-
-                                        flex
-                                        items-center
-                                        justify-center
-                                    "
-                                >
-
-                                    <FileText
-                                        size={20}
-                                        className="
-                                            text-blue-400
-                                        "
-                                    />
-
-                                </div>
-
-                                <div>
-
-                                    <p
-                                        className="
-                                            text-xs
-                                            uppercase
-                                            tracking-wider
-                                            text-slate-500
-                                        "
-                                    >
-                                        Document Mode
-                                    </p>
-
-                                    <p
-                                        className="
-                                            text-white
-                                            font-medium
-                                        "
-                                    >
-                                        {
-                                            activeDocument
-                                                ?.split(/[/\\]/)
-                                                .pop()
-                                        }
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                            <button
-
-                                onClick={
-                                    () =>
-                                    setActiveDocument(
-                                        null
-                                    )
-                                }
-
-                                className="
-                                    text-slate-400
-                                    hover:text-white
-
-                                    transition-colors
-                                "
-                            >
-
-                                <X size={18} />
-
-                            </button>
-
-                        </div>
-
-                    )
-                } */}
-
                 {
                     activeDocument &&
                     documentInfo && (
@@ -296,7 +186,8 @@ export default function ChatWindow({
                         ) => (
 
                             <Message
-                                key={index}
+                                key={message.id}
+                                id={message.id}
                                 role={
                                     message.role === "human"
                                         ? "user"
@@ -312,11 +203,10 @@ export default function ChatWindow({
                                 }
 
                                 onRegenerate={() =>
-
                                     onRegenerate(
+                                        messages[index - 1].id,
                                         index
                                     )
-
                                 }
                             />
 

@@ -27,6 +27,7 @@ import {
 from "react-syntax-highlighter/dist/esm/styles/prism"
 
 export default function Message({
+    id,
     role,
     content,
     sources,
@@ -85,10 +86,9 @@ export default function Message({
         <div
             className={`
                 group
-
                 flex
                 mb-4
-
+                gap-2
                 ${
                     isUser
                     ? "justify-end"
@@ -305,7 +305,7 @@ export default function Message({
                     )
                 }
 
-                                {
+                {
                     !isUser && (
 
                         <div
