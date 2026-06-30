@@ -100,7 +100,8 @@ export const uploadPdf =
 export const sendMessageStream =
     async (
         payload,
-        onEvent
+        onEvent,
+        signal
     ) => {
 
         const response =
@@ -122,7 +123,9 @@ export const sendMessageStream =
                     body:
                         JSON.stringify(
                             payload
-                        )
+                        ),
+
+                    signal
 
                 }
 

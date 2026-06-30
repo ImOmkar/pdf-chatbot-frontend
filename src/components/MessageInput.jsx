@@ -1,7 +1,6 @@
 import {
     Send,
-    FileText,
-    BookOpen
+    Square
 }
 from "lucide-react"
 
@@ -9,6 +8,7 @@ export default function MessageInput({
     input,
     setInput,
     onSend,
+    onStop,
     loading,
 }) {
 
@@ -84,7 +84,7 @@ export default function MessageInput({
                     "
                 />
 
-                <button
+                {/* <button
 
                     disabled={loading}
 
@@ -130,6 +130,71 @@ export default function MessageInput({
                             "
                             />
                         : <Send size={18} />
+                    }
+
+                </button> */}
+
+                <button
+                    onClick={
+                        loading
+                            ? onStop
+                            : onSend
+                    }
+
+                    className={`
+                        h-10
+                        w-10
+
+                        flex
+                        items-center
+                        justify-center
+
+                        rounded-xl
+
+                        transition-all
+
+                        ${
+                            loading
+
+                            ? `
+                                bg-red-600
+                                hover:bg-red-500
+                            `
+
+                            : `
+                                bg-blue-600
+                                hover:bg-blue-500
+                            `
+                        }
+                    `}
+                >
+
+                    {
+
+                        loading
+
+                        ? (
+
+                            <Square
+
+                                size={16}
+
+                                fill="white"
+
+                            />
+
+                        )
+
+                        : (
+
+                            <Send
+
+                                size={18}
+
+                            />
+
+                        )
+
                     }
 
                 </button>

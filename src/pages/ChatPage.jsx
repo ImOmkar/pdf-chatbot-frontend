@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
 import Sidebar from "../components/Sidebar"
 import ChatWindow from "../components/ChatWindow"
@@ -42,6 +42,10 @@ export default function ChatPage() {
     const [documentInfo, setDocumentInfo] = useState(null)
 
     const [loading, setLoading] = useState(false)
+    
+    const abortControllerRef = useRef(null)
+
+
 
     const loadSessions =
         async () => {
@@ -149,166 +153,6 @@ export default function ChatPage() {
 
         }
 
-    // const streamResponse =
-    //     async (
-    //         question,
-    //         replaceMessageIndex = null
-    //     ) => {
-
-    //         setLoading(true)
-
-    //         const payload = {
-
-    //             session_id:
-    //                 selectedSession.session_id,
-
-    //             question
-
-    //         }
-
-    //         if (activeDocument) {
-
-    //             payload.document =
-    //                 activeDocument
-
-    //         }
-
-    //         const getAIIndex =
-    //             (updated) =>
-
-    //                 replaceMessageIndex !== null
-
-    //                     ? replaceMessageIndex
-
-    //                     : updated.length - 1
-
-    //         let aiResponse = ""
-
-    //         if (
-    //             replaceMessageIndex !== null
-    //         ) {
-
-    //             setMessages(
-    //                 prev => {
-
-    //                     const updated = [...prev]
-
-    //                     updated[
-    //                         getAIIndex(updated)
-    //                     ] = {
-
-    //                         role: "ai",
-
-    //                         content: "",
-
-    //                         sources: []
-
-    //                     }
-
-    //                     return updated
-
-    //                 }
-    //             )
-
-    //         }
-
-    //         else {
-
-    //             setMessages(
-    //                 prev => [
-
-    //                     ...prev,
-
-    //                     {
-
-    //                         role: "ai",
-
-    //                         content: "",
-
-    //                         sources: []
-
-    //                     }
-
-    //                 ]
-    //             )
-
-    //         }
-
-    //         await sendMessageStream(
-
-    //             payload,
-
-    //             (event) => {
-
-    //                 if (
-    //                     event.type === "chunk"
-    //                 ) {
-
-    //                     aiResponse +=
-    //                         event.content
-
-    //                     setMessages(
-    //                         prev => {
-
-    //                             const updated = [...prev]
-
-    //                             updated[
-    //                                 getAIIndex(updated)
-    //                             ] = {
-
-    //                                 ...updated[
-    //                                     getAIIndex(updated)
-    //                                 ],
-
-    //                                 content:
-    //                                     aiResponse
-
-    //                             }
-
-    //                             return updated
-
-    //                         }
-    //                     )
-
-    //                 }
-
-    //                 else if (
-    //                     event.type === "done"
-    //                 ) {
-
-    //                     setMessages(
-    //                         prev => {
-
-    //                             const updated = [...prev]
-
-    //                             updated[
-    //                                 getAIIndex(updated)
-    //                             ] = {
-
-    //                                 ...updated[
-    //                                     getAIIndex(updated)
-    //                                 ],
-
-    //                                 sources:
-    //                                     event.sources || []
-
-    //                             }
-
-    //                             return updated
-
-    //                         }
-    //                     )
-
-    //                     setLoading(false)
-
-    //                 }
-
-    //             }
-
-    //         )
-
-    //     }
-
     const streamResponse =
     async ({
 
@@ -341,7 +185,6 @@ export default function ChatPage() {
 
         let aiResponse = ""
 
-        // Append ONLY an empty AI message
         setMessages(
             prev => [
 
@@ -353,7 +196,9 @@ export default function ChatPage() {
 
                     content: "",
 
-                    sources: []
+                    sources: [],
+
+                    completed: false
 
                 }
 
@@ -361,6 +206,8 @@ export default function ChatPage() {
         )
 
         try {
+
+            abortControllerRef.current = new AbortController()
 
             await sendMessageStream(
 
@@ -376,11 +223,16 @@ export default function ChatPage() {
 
                             const updated = [...prev]
 
-                            updated[updated.length - 1] = {
+                            updated[
+                                updated.length - 1
+                            ] = {
 
-                                ...updated[updated.length - 1],
+                                ...updated[
+                                    updated.length - 1
+                                ],
 
-                                content: aiResponse
+                                content:
+                                    aiResponse
 
                             }
 
@@ -390,17 +242,29 @@ export default function ChatPage() {
 
                     }
 
-                    else if (event.type === "done") {
+                    else if (
+                        event.type === "done"
+                    ) {
 
                         setMessages(prev => {
 
                             const updated = [...prev]
 
-                            updated[updated.length - 1] = {
+                            updated[
+                                updated.length - 1
+                            ] = {
 
-                                ...updated[updated.length - 1],
+                                ...updated[
+                                    updated.length - 1
+                                ],
 
-                                sources: event.sources || []
+                                sources:
+                                    event.sources || [],
+
+                                suggestions:
+                                    event.suggestions || [],
+
+                                completed: true
 
                             }
 
@@ -412,7 +276,9 @@ export default function ChatPage() {
 
                     }
 
-                }
+                },
+
+                abortControllerRef.current.signal
 
             )
 
@@ -421,6 +287,18 @@ export default function ChatPage() {
         catch (error) {
 
             setLoading(false)
+
+            if (
+                error.name === "AbortError"
+            ) {
+
+                console.log(
+                    "Generation stopped."
+                )
+
+                return
+
+            }
 
             throw error
 
@@ -528,90 +406,70 @@ export default function ChatPage() {
 
         }
 
-    // const handleRegenerate =
-    //     async (
-    //         messageIndex
-    //     ) => {
-
-    //         if (loading) {
-    //             return
-    //         }
-
-    //         const userMessage =
-    //             messages[
-    //                 messageIndex - 1
-    //             ]
-
-    //         if (
-    //             !userMessage ||
-    //             userMessage.role !== "human"
-    //         ) {
-    //             return
-    //         }
-
-    //         await streamResponse(
-
-    //             userMessage.content,
-
-    //             messageIndex
-
-    //         )
-
-    //     }
-
     const handleRegenerate =
-    async (
-        humanMessageId,
-        aiIndex
-    ) => {
+        async (
+            humanMessageId,
+            aiIndex
+        ) => {
 
-        if (loading) {
-            return
-        }
+            if (loading) {
+                return
+            }
 
-        const userMessage =
-            messages[
-                aiIndex - 1
-            ]
+            const userMessage =
+                messages[
+                    aiIndex - 1
+                ]
 
-        if (
-            !userMessage ||
-            userMessage.role !== "human"
-        ) {
-            return
-        }
+            if (
+                !userMessage ||
+                userMessage.role !== "human"
+            ) {
+                return
+            }
 
-        // Trim everything after the selected human message
-        const trimmedMessages =
-            messages.slice(
-                0,
-                aiIndex
+            // Trim everything after the selected human message
+            const trimmedMessages =
+                messages.slice(
+                    0,
+                    aiIndex
+                )
+
+            setMessages(
+                trimmedMessages
             )
 
-        setMessages(
-            trimmedMessages
-        )
+            // Wait for React to apply the state update
+            await new Promise(
+                resolve =>
+                    setTimeout(
+                        resolve,
+                        0
+                    )
+            )
 
-        // Wait for React to apply the state update
-        await new Promise(
-            resolve =>
-                setTimeout(
-                    resolve,
-                    0
-                )
-        )
+            await streamResponse({
 
-        await streamResponse({
+                question:
+                    userMessage.content,
 
-            question:
-                userMessage.content,
+                regenerateMessageId:
+                    humanMessageId
 
-            regenerateMessageId:
-                humanMessageId
+            })
 
-        })
+        }
 
-    }
+    const handleStop =
+        () => {
+
+            abortControllerRef.current?.abort()
+
+            abortControllerRef.current = null
+
+            setLoading(false)
+
+        }
 
     return (
 
@@ -697,6 +555,7 @@ export default function ChatPage() {
                                 input={input}
                                 setInput={setInput}
                                 onSend={handleSend}
+                                onStop={handleStop}
                                 loading={loading}
                             />
 

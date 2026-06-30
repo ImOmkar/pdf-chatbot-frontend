@@ -183,34 +183,53 @@ export default function ChatWindow({
                         (
                             message,
                             index
-                        ) => (
+                        ) => {
 
-                            <Message
-                                key={message.id}
-                                id={message.id}
-                                role={
-                                    message.role === "human"
-                                        ? "user"
-                                        : "assistant"
-                                }
+                            if (
+                                message.role === "ai" &&
+                                message.content === ""
+                            ) {
+                                return null
+                            }
 
-                                content={
-                                    message.content
-                                }
+                            return (
 
-                                sources={
-                                    message.sources || []
-                                }
+                                <Message
+                                    key={message.id ?? index}
 
-                                onRegenerate={() =>
-                                    onRegenerate(
-                                        messages[index - 1].id,
-                                        index
-                                    )
-                                }
-                            />
+                                    id={message.id}
 
-                        )
+                                    role={
+                                        message.role === "human"
+                                            ? "user"
+                                            : "assistant"
+                                    }
+
+                                    content={message.content}
+
+                                    sources={
+                                        message.sources || []
+                                    }
+
+                                    onRegenerate={() =>
+                                        onRegenerate(
+                                            messages[index - 1].id,
+                                            index
+                                        )
+                                    }
+
+                                    completed={
+                                        message.completed
+                                    }
+
+                                    suggestions={
+                                        message.suggestions || []
+                                    }
+                                />
+
+                            )
+
+                        }
                     )
                 }
 

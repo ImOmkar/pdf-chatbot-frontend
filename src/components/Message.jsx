@@ -30,9 +30,14 @@ export default function Message({
     id,
     role,
     content,
+    suggestions,
     sources,
-    onRegenerate
+    completed = true,
+    onRegenerate,
+
 }) {
+
+    console.log("suggestions", suggestions)
 
     const [copied, setCopied] = useState(false)
 
@@ -318,13 +323,12 @@ export default function Message({
                                 justify-end
                                 items-center
                                 gap-1
-                                
+                                my-2
                                 opacity-0
                                 group-hover:opacity-100
 
                                 transition-all
-                            "
-                        >
+                            ">
 
                             <button
 
@@ -361,36 +365,42 @@ export default function Message({
 
                             </button>
 
-                            <button
+                            {
+                                completed && (
 
-                                onClick={onRegenerate}
+                                    <button
 
-                                title="Regenerate"
+                                        onClick={onRegenerate}
 
-                                className="
-                                    h-8
-                                    w-8
+                                        title="Regenerate"
 
-                                    rounded-lg
+                                        className="
+                                            h-8
+                                            w-8
 
-                                    flex
-                                    items-center
-                                    justify-center
+                                            rounded-lg
 
-                                    text-slate-400
+                                            flex
+                                            items-center
+                                            justify-center
 
-                                    hover:text-white
-                                    hover:bg-slate-700
+                                            text-slate-400
 
-                                    transition-all
-                                "
-                            >
+                                            hover:text-white
+                                            hover:bg-slate-700
 
-                                <RotateCcw
-                                    size={16}
-                                />
+                                            transition-all
+                                        "
+                                    >
 
-                            </button>
+                                        <RotateCcw
+                                            size={16}
+                                        />
+
+                                    </button>
+
+                                )
+                            }
 
                         </div>
 
