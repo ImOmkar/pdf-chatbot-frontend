@@ -1,209 +1,363 @@
 import {
+    Menu,
+    MessageCircle,
     MessageSquare,
     Upload,
     FileText
 } from "lucide-react"
 
-export default function WelcomeScreen() {
+import ActionCard
+from "./ActionCard"
+
+export default function WelcomeScreen({ 
+    
+    onStartChat, 
+    setSidebarOpen 
+
+}) {
 
     return (
-
-        <div
-            className="
-                flex-1
-                flex
-                items-center
-                justify-center
-                px-6
-            "
-        >
-
+        <>
             <div
                 className="
-                    max-w-4xl
-                    w-full
-                    text-center
+                    lg:hidden
+
+                    flex
+                    items-center
+                    gap-3
+
+                    px-2
+                    py-2
+
+                    border-b
+                    border-slate-800
                 "
             >
 
-                <div
+                <button
+
+                    onClick={() =>
+
+                        setSidebarOpen(
+                            true
+                        )
+
+                    }
+
                     className="
-                        mb-10
+                        p-2
+
+                        dark:text-white
+
+                        rounded-lg
+
+                        hover:bg-slate-800
+
+                        transition
                     "
                 >
 
-                    <h1
-                        className="
-                            text-5xl
-                            font-bold
-                            text-white
-                            mb-4
-                        "
-                    >
-                        PDF ChatBot
-                    </h1>
+                    <Menu
+                        size={22}
+                    />
 
-                    <p
-                        className="
-                            text-slate-400
-                            text-lg
-                        "
-                    >
-                        Upload PDFs and chat
-                        with your documents
-                        using AI.
-                    </p>
+                </button>
 
-                </div>
+                <h2
+                    className="
+                        text-white
+                        font-semibold
+                    "
+                >
+
+                    PDF ChatBot
+
+                </h2>
+
+            </div>
+
+            <div
+                className="
+                    flex-1
+                    flex
+                    items-center
+                    justify-center
+                    px-6
+                ">
 
                 <div
                     className="
-                        grid
-                        md:grid-cols-3
-                        gap-5
-                    "
-                >
+                        max-w-4xl
+                        w-full
+                        text-center
+                    ">
 
                     <div
                         className="
-                            bg-slate-900
-                            border
-                            border-slate-800
-                            rounded-2xl
-                            p-6
-                            hover:border-blue-500
-                            transition
-                            cursor-pointer
+                            mb-8
+
+                            max-w-2xl
+
+                            mx-auto
                         "
                     >
 
-                        <MessageSquare
-                            size={32}
+                        <div
                             className="
-                                mx-auto
-                                mb-4
-                                text-blue-400
-                            "
-                        />
+                                inline-flex
 
-                        <h3
-                            className="
-                                text-white
-                                font-semibold
-                                mb-2
+                                items-center
+                                gap-2
+
+                                rounded-full
+
+                                bg-blue-500/10
+
+                                border
+                                border-blue-500/20
+
+                                px-4
+                                py-2
+
+                                text-sm
+
+                                text-blue-300
+
+                                mb-5
                             "
                         >
-                            Start Chat
-                        </h3>
+
+                            ⚡ AI Powered Document Assistant
+
+                        </div>
+
+                        <h1
+                            className="
+                                text-4xl
+
+                                md:text-6xl
+
+                                font-bold
+
+                                tracking-tight
+
+                                text-white
+                            "
+                        >
+
+                            Chat with your PDFs
+
+                        </h1>
 
                         <p
                             className="
+                                mt-4
+
                                 text-slate-400
-                                text-sm
+
+                                text-lg
+
+                                leading-relaxed
                             "
                         >
-                            Create a new
-                            conversation and
-                            ask questions.
+
+                            Upload documents, ask questions,
+                            explore summaries and get answers
+                            with cited sources.
+
                         </p>
 
                     </div>
 
                     <div
                         className="
-                            bg-slate-900
-                            border
-                            border-slate-800
-                            rounded-2xl
-                            p-6
-                            hover:border-green-500
-                            transition
-                            cursor-pointer
+                            flex
+                            flex-wrap
+                            justify-center
+                            gap-3
+
+                            mb-8
                         "
                     >
 
-                        <Upload
-                            size={32}
+                        <div
                             className="
-                                mx-auto
-                                mb-4
-                                text-green-400
-                            "
-                        />
+                                px-4
+                                py-2
 
-                        <h3
-                            className="
-                                text-white
-                                font-semibold
-                                mb-2
-                            "
-                        >
-                            Upload PDF
-                        </h3>
+                                rounded-full
 
-                        <p
-                            className="
-                                text-slate-400
+                                bg-slate-900
+
+                                border
+                                border-slate-800
+
                                 text-sm
+
+                                text-slate-300
                             "
                         >
-                            Upload company
-                            policies, reports,
-                            invoices and more.
-                        </p>
+
+                            📄 Unlimited PDFs
+
+                        </div>
+
+                        <div
+                            className="
+                                px-4
+                                py-2
+
+                                rounded-full
+
+                                bg-slate-900
+
+                                border
+                                border-slate-800
+
+                                text-sm
+
+                                text-slate-300
+                            "
+                        >
+
+                            ⚡ AI Powered
+
+                        </div>
+
+                        <div
+                            className="
+                                px-4
+                                py-2
+
+                                rounded-full
+
+                                bg-slate-900
+
+                                border
+                                border-slate-800
+
+                                text-sm
+
+                                text-slate-300
+                            "
+                        >
+
+                            🔍 Source Citations
+
+                        </div>
+
+                        <div
+                            className="
+                                px-4
+                                py-2
+
+                                rounded-full
+
+                                bg-slate-900
+
+                                border
+                                border-slate-800
+
+                                text-sm
+
+                                text-slate-300
+                            "
+                        >
+
+                            💬 Streaming Chat
+
+                        </div>
 
                     </div>
 
                     <div
                         className="
-                            bg-slate-900
-                            border
-                            border-slate-800
-                            rounded-2xl
-                            p-6
-                            hover:border-purple-500
-                            transition
-                            cursor-pointer
+                            max-w-2xl
+                            mx-auto
+
+                            space-y-4
                         "
                     >
 
-                        <FileText
-                            size={32}
-                            className="
-                                mx-auto
-                                mb-4
-                                text-purple-400
+                        <ActionCard
+
+                            title="Start New Chat"
+
+                            description="Create a new conversation"
+
+                            icon={
+
+                                <MessageSquare
+                                    size={22}
+                                    className="
+                                        text-blue-400
+                                    "
+                                />
+
+                            }
+
+                            accent="
+                                bg-blue-500/10
                             "
+
+                            onClick={
+                                onStartChat
+                            }
+
                         />
 
-                        <h3
-                            className="
-                                text-white
-                                font-semibold
-                                mb-2
-                            "
-                        >
-                            Documents
-                        </h3>
+                        <ActionCard
 
-                        <p
-                            className="
-                                text-slate-400
-                                text-sm
+                            title="Upload PDF"
+
+                            description="Import a document"
+
+                            icon={
+
+                                <Upload
+                                    size={22}
+                                    className="
+                                        text-emerald-400
+                                    "
+                                />
+
+                            }
+
+                            accent="
+                                bg-emerald-500/10
                             "
-                        >
-                            Browse uploaded
-                            documents and
-                            chat with them.
-                        </p>
+
+                        />
+
+                        <ActionCard
+
+                            title="Browse Documents"
+
+                            description="Use uploaded PDFs"
+
+                            icon={
+
+                                <FileText
+                                    size={22}
+                                    className="
+                                        text-violet-400
+                                    "
+                                />
+
+                            }
+
+                            accent="
+                                bg-violet-500/10
+                            "
+
+                        />
 
                     </div>
 
                 </div>
 
             </div>
-
-        </div>
+        </>
 
     )
 }

@@ -2,7 +2,8 @@ import {
     MoreHorizontal,
     Pencil,
     Trash2,
-    ChevronRight
+    ChevronRight,
+    Pin
 }
 from "lucide-react"
 
@@ -30,7 +31,9 @@ export default function SessionItem({
 
     setConfirmModal,
 
-    handleDelete
+    handleDelete,
+
+    onTogglePin
 
 }) {
 
@@ -157,7 +160,45 @@ export default function SessionItem({
                                 max-w-[180px]
                             "
                         >
-                            {session.title}
+                            <div
+                                className="
+                                    flex
+                                    items-center
+                                    gap-2
+
+                                    min-w-0
+                                "
+                            >
+
+                                {
+                                    session.is_pinned && (
+
+                                        <Pin
+
+                                            size={14}
+
+                                            className="
+                                                text-yellow-400
+
+                                                shrink-0
+                                            "
+
+                                        />
+
+                                    )
+                                }
+
+                                <span
+                                    className="
+                                        truncate
+                                    "
+                                >
+
+                                    {session.title}
+
+                                </span>
+
+                            </div>
                         </span>
 
                     )
@@ -283,6 +324,74 @@ export default function SessionItem({
 
                                         <span>
                                             Rename
+                                        </span>
+
+                                    </div>
+
+                                    <ChevronRight
+                                        size={15}
+                                    />
+
+                                </button>
+
+                                <button
+
+                                    onClick={async (e) => {
+
+                                        e.stopPropagation()
+
+                                        await onTogglePin(
+                                            session.session_id
+                                        )
+
+                                        setOpenMenu(
+                                            null
+                                        )
+
+                                    }}
+
+                                    className="
+                                        w-full
+
+                                        flex
+                                        items-center
+                                        justify-between
+
+                                        px-4
+                                        py-3
+
+                                        text-sm
+
+                                        text-slate-300
+
+                                        hover:bg-slate-800
+                                        hover:text-white
+
+                                        transition-all
+                                    "
+                                >
+
+                                    <div
+                                        className="
+                                            flex
+                                            items-center
+                                            gap-3
+                                        "
+                                    >
+
+                                        <Pin size={16} />
+
+                                        <span>
+
+                                            {
+                                                session.is_pinned
+
+                                                    ? "Unpin Chat"
+
+                                                    : "Pin Chat"
+
+                                            }
+
                                         </span>
 
                                     </div>

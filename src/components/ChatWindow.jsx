@@ -8,7 +8,8 @@ import Message from "./Message"
 import {
     FileText,
     X,
-    Download
+    Download,
+    Menu
 }
 from "lucide-react"
 
@@ -26,7 +27,12 @@ export default function ChatWindow({
     onRegenerate,
     onSuggestionClick,
     onExport,
-    onViewSource
+    onViewSource,
+    onSummarizeDocument,
+
+    sidebarOpen,
+
+    setSidebarOpen,
 }) {
 
     const [
@@ -114,17 +120,56 @@ export default function ChatWindow({
                     mb-4
                 ">
 
-                <h2
+                <div
                     className="
-                        text-white
-                        font-semibold
+                        flex
+                        items-center
+                        gap-3
                     "
                 >
-                    {
-                        selectedSession?.title
-                        || "New Chat"
-                    }
-                </h2>
+
+                    <button
+
+                        onClick={() =>
+
+                            setSidebarOpen(
+                                true
+                            )
+
+                        }
+
+                        className="
+                            lg:hidden
+
+                            p-2
+
+                            rounded-lg
+                            dark:text-white
+                            hover:bg-slate-800
+
+                            transition
+                        "
+                    >
+
+                        <Menu size={22} />
+
+                    </button>
+
+                    <h2
+                        className="
+                            text-white
+                            font-semibold
+                        "
+                    >
+
+                        {
+                            selectedSession?.title
+                            || "New Chat"
+                        }
+
+                    </h2>
+
+                </div>
 
                 <div
                     className="
@@ -200,7 +245,8 @@ export default function ChatWindow({
 
                 className="
                     w-full
-                    px-6
+                    px-3
+                    sm:px-6
                 ">
 
                 {
@@ -299,6 +345,35 @@ export default function ChatWindow({
                                 {" "}
                                 pages
                             </div>
+
+                            <button
+
+                                onClick={onSummarizeDocument}
+
+                                className="
+                                    mt-5
+
+                                    w-full
+
+                                    bg-blue-600
+
+                                    hover:bg-blue-500
+
+                                    transition-colors
+
+                                    rounded-xl
+
+                                    py-3
+
+                                    text-white
+
+                                    font-medium
+                                "
+                            >
+
+                                📝 Summarize Document
+
+                            </button>
 
                         </div>
 

@@ -259,5 +259,36 @@ export const getSourceDetails =
             }
 
         )
+
+
+
+export const getDocumentSummary =
+    (
+        filename
+    ) =>
+
+        api.post(
+
+            "/summarize",
+
+            {
+
+                filename
+
+            }
+
+        )
+
+
+export const togglePinSession =
+    (
+        sessionId
+    ) =>
+
+        api.patch(
+
+            `/sessions/${sessionId}/pin`
+
+        )
         
 export default api

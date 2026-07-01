@@ -128,7 +128,13 @@ export default function Message({
             <div
                 className={`
                     relative
-                    max-w-[80%]
+                    w-fit
+
+                    max-w-[90%]
+
+                    sm:max-w-[85%]
+
+                    lg:max-w-[75%]
                     px-5
                     py-4
    
@@ -233,8 +239,7 @@ export default function Message({
                                     flex
                                     flex-wrap
                                     gap-3
-                                "
-                            >
+                                ">
 
                                 {
                                     sources.map(
@@ -273,7 +278,7 @@ export default function Message({
                                                     px-3
                                                     py-2
 
-                                                    min-w-[180px]
+                                                    w-full
 
                                                     text-left
 
@@ -287,6 +292,7 @@ export default function Message({
                                                 <div
                                                     className="
                                                         flex
+                                                        break-all
                                                         items-center
                                                         gap-2
 

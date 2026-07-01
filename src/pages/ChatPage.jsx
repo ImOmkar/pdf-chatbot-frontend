@@ -6,7 +6,9 @@ import MessageInput from "../components/MessageInput"
 import {
     getSessions,
     sendMessage,
-    sendMessageStream
+    sendMessageStream,
+    createSession,
+    togglePinSession
 } from "../services/api"
 
 import {
@@ -14,7 +16,8 @@ import {
     getDocuments,
     getDocumentInfo,
     exportChat,
-    getSourceDetails
+    getSourceDetails,
+    getDocumentSummary
 }
 from "../services/api"
 
@@ -24,8 +27,13 @@ from "../components/SourceViewerModal"
 import WelcomeScreen
 from "../components/WelcomeScreen"
 
+import DocumentSummaryModal
+from "../components/DocumentSummaryModal"
+
+
 import toast
 from "react-hot-toast"
+import ConfirmModal from "../components/ConfirmModal"
 
 export default function ChatPage() {
 
@@ -47,6 +55,26 @@ export default function ChatPage() {
     const [documentInfo, setDocumentInfo] = useState(null)
 
     const [
+        summaryOpen,
+        setSummaryOpen
+    ] = useState(
+        false
+    )
+
+    const [
+        documentSummary,
+        setDocumentSummary
+    ] = useState("")
+    
+
+    const [
+        summaryLoading,
+        setSummaryLoading
+    ] = useState(
+        false
+    )
+
+    const [
 
         selectedSource,
 
@@ -66,11 +94,77 @@ export default function ChatPage() {
         false
     )
 
+    const [
+        confirmModal,
+        setConfirmModal
+    ] = useState({
+
+        open: false,
+
+        title: "",
+
+        message: "",
+
+        confirmText: "Confirm",
+
+        danger: false,
+
+        onConfirm: null
+
+    })
+
     const [loading, setLoading] = useState(false)
+
+    const [
+        sidebarOpen,
+        setSidebarOpen
+    ] = useState(
+        false
+    )
     
     const abortControllerRef = useRef(null)
 
 
+    const handleNewChat =
+    async () => {
+
+        setSidebarOpen(false)
+
+        try {
+
+            const response =
+                await createSession()
+
+            const session = {
+
+                session_id:
+                    response.data.session_id,
+
+                title:
+                    "New Chat"
+
+            }
+
+            setSelectedSession(
+                session
+            )
+
+            setMessages([])
+
+            await loadSessions()
+
+            toast.success(
+                "Ready for a new conversation."
+            )
+
+        }
+        catch(error) {
+
+            console.log(error)
+
+        }
+
+    }
 
     const loadSessions =
         async () => {
@@ -158,8 +252,15 @@ export default function ChatPage() {
                     file
                 )
 
+                const displayName =
+                    file.name.length > 35
+
+                        ? `${file.name.slice(0, 35)}...`
+
+                        : file.name
+
                 toast.success(
-                    `${file.name} uploaded successfully.`
+                    `${displayName} uploaded successfully.`
                 )
 
                 await loadSessions()
@@ -173,6 +274,8 @@ export default function ChatPage() {
                 toast.error(
                     "Upload failed."
                 )
+
+                throw error
 
             }
 
@@ -528,6 +631,84 @@ export default function ChatPage() {
 
         }
 
+    
+    const handleSummarizeDocument =
+    async () => {
+
+        if (
+            !activeDocument
+        ) {
+
+            return
+
+        }
+
+        try {
+
+            setSummaryOpen(
+                true
+            )
+
+            setSummaryLoading(
+                true
+            )
+
+            const response =
+
+                await getDocumentSummary(
+
+                    activeDocument
+
+                )
+
+            if (
+                response.data.success
+            ) {
+
+                setDocumentSummary(
+                    response.data.summary
+                )
+
+            }
+            else {
+
+                toast.error(
+                    response.data.error
+                )
+
+                setSummaryOpen(
+                    false
+                )
+
+            }
+
+        }
+
+        catch (error) {
+
+            console.log(error)
+
+            toast.error(
+
+                "Unable to summarize document."
+
+            )
+
+            setSummaryOpen(
+                false
+            )
+
+        }
+
+        finally {
+
+            setSummaryLoading(
+                false
+            )
+
+        }
+
+    }
 
     const handleExport =
     async () => {
@@ -671,6 +852,33 @@ export default function ChatPage() {
 
     }
 
+    const handleTogglePin =
+    async (
+        sessionId
+    ) => {
+
+        try {
+
+            await togglePinSession(
+                sessionId
+            )
+
+            await loadSessions()
+
+        }
+
+        catch (error) {
+
+            console.log(error)
+
+            toast.error(
+                "Unable to update pin."
+            )
+
+        }
+
+    }
+
     return (
 
         <div
@@ -717,6 +925,26 @@ export default function ChatPage() {
                 onUpload={
                     handleUpload
                 }
+
+                sidebarOpen={
+                    sidebarOpen
+                }
+
+                setSidebarOpen={
+                    setSidebarOpen
+                }
+
+                onNewChat={
+                    handleNewChat
+                }
+
+                setConfirmModal={
+                    setConfirmModal
+                }
+
+                onTogglePin={
+                    handleTogglePin
+                }
             />
 
             <div
@@ -758,6 +986,17 @@ export default function ChatPage() {
                                 onViewSource={
                                     handleViewSource
                                 }
+                                onSummarizeDocument={
+                                    handleSummarizeDocument
+                                }
+
+                                sidebarOpen={
+                                    sidebarOpen
+                                }
+
+                                setSidebarOpen={
+                                    setSidebarOpen
+                                }
                             />
 
                             <MessageInput
@@ -772,7 +1011,10 @@ export default function ChatPage() {
 
                     ) : (
 
-                        <WelcomeScreen />
+                        <WelcomeScreen 
+                            onStartChat={handleNewChat} 
+                            setSidebarOpen={setSidebarOpen} 
+                        />
 
                     )
                 }
@@ -795,6 +1037,94 @@ export default function ChatPage() {
                         setSourceViewerOpen(
                             false
                         )
+                }
+
+            />
+
+            <DocumentSummaryModal
+
+                open={
+                    summaryOpen
+                }
+
+                summary={
+                    documentSummary
+                }
+
+                loading={
+                    summaryLoading
+                }
+
+                document={
+                    activeDocument
+                        ?.split(/[/\\]/)
+                        .pop()
+                }
+
+                onClose={
+                    () =>
+
+                        setSummaryOpen(
+                            false
+                        )
+                }
+
+            />
+
+            {/* confirm modal */}
+            <ConfirmModal
+
+                open={
+                    confirmModal.open
+                }
+
+                title={
+                    confirmModal.title
+                }
+
+                message={
+                    confirmModal.message
+                }
+
+                confirmText={
+                    confirmModal.confirmText
+                }
+
+                danger={
+                    confirmModal.danger
+                }
+
+                onCancel={
+                    () =>
+                    setConfirmModal({
+
+                        ...confirmModal,
+
+                        open: false
+
+                    })
+                }
+
+                onConfirm={
+                    async () => {
+
+                        if (
+                            confirmModal.onConfirm
+                        ) {
+
+                            await confirmModal.onConfirm()
+
+                        }
+
+                        setConfirmModal({
+
+                            ...confirmModal,
+
+                            open: false
+
+                        })
+
+                    }
                 }
 
             />
