@@ -3,12 +3,15 @@ import { useState, useEffect, useRef } from "react"
 import Sidebar from "../components/Sidebar"
 import ChatWindow from "../components/ChatWindow"
 import MessageInput from "../components/MessageInput"
+import SessionActionSheet
+from "../components/SessionActionSheet"
 import {
     getSessions,
     sendMessage,
     sendMessageStream,
     createSession,
-    togglePinSession
+    togglePinSession,
+    renameSession
 } from "../services/api"
 
 import {
@@ -30,6 +33,11 @@ from "../components/WelcomeScreen"
 import DocumentSummaryModal
 from "../components/DocumentSummaryModal"
 
+import RenameSessionModal
+from "../components/RenameSessionModal"
+
+import RenameSessionSheet
+from "../components/RenameSessionSheet"
 
 import toast
 from "react-hot-toast"
@@ -110,6 +118,28 @@ export default function ChatPage() {
         danger: false,
 
         onConfirm: null
+
+    })
+
+    const [
+        sessionActionSheet,
+        setSessionActionSheet
+    ] = useState({
+
+        open: false,
+
+        session: null
+
+    })
+
+    const [
+        renameModal,
+        setRenameModal
+    ] = useState({
+
+        open: false,
+
+        session: null
 
     })
 
@@ -852,6 +882,50 @@ export default function ChatPage() {
 
     }
 
+    const handleRenameSession =
+    async (
+        sessionId,
+        title
+    ) => {
+
+        try {
+
+            await renameSession(
+
+                sessionId,
+
+                title.trim()
+
+            )
+
+            await loadSessions()
+
+            setRenameModal({
+
+                open: false,
+
+                session: null
+
+            })
+
+            toast.success(
+                "Chat renamed."
+            )
+
+        }
+
+        catch (error) {
+
+            console.log(error)
+
+            toast.error(
+                "Unable to rename chat."
+            )
+
+        }
+
+    }
+
     const handleTogglePin =
     async (
         sessionId
@@ -876,6 +950,20 @@ export default function ChatPage() {
             )
 
         }
+
+    }
+
+    const openRenameModal = (session) => {
+
+        setSessionActionSheet({
+            open: false,
+            session: null
+        })
+
+        setRenameModal({
+            open: true,
+            session
+        })
 
     }
 
@@ -944,6 +1032,14 @@ export default function ChatPage() {
 
                 onTogglePin={
                     handleTogglePin
+                }
+                
+                setSessionActionSheet={
+                    setSessionActionSheet
+                }
+
+                setRenameModal={
+                    setRenameModal
                 }
             />
 
@@ -1125,6 +1221,119 @@ export default function ChatPage() {
                         })
 
                     }
+                }
+
+            />
+
+            <SessionActionSheet
+                open={
+                    sessionActionSheet.open
+                }
+
+                session={
+                    sessionActionSheet.session
+                }
+
+                onClose={() =>
+
+                    setSessionActionSheet({
+
+                        open: false,
+
+                        session: null
+
+                    })
+
+                }
+
+                onTogglePin={
+                    handleTogglePin
+                }
+
+                onRename={(session) => {
+
+                    openRenameModal(session)
+
+                }}
+
+                onDelete={(session) => {
+
+                    // we'll implement next
+
+                    console.log(session)
+
+                }}
+
+            />
+
+            <RenameSessionModal
+
+                open={
+                    renameModal.open
+                }
+
+                session={
+                    renameModal.session
+                }
+
+                onClose={() =>
+
+                    setRenameModal({
+
+                        open: false,
+
+                        session: null
+
+                    })
+
+                }
+
+                onSave={(title) =>
+
+                    handleRenameSession(
+
+                        renameModal.session.session_id,
+
+                        title
+
+                    )
+
+                }
+
+            />
+
+            <RenameSessionSheet
+
+                open={
+                    renameModal.open
+                }
+
+                session={
+                    renameModal.session
+                }
+
+                onClose={() =>
+
+                    setRenameModal({
+
+                        open: false,
+
+                        session: null
+
+                    })
+
+                }
+
+                onSave={(title) =>
+
+                    handleRenameSession(
+
+                        renameModal.session.session_id,
+
+                        title
+
+                    )
+
                 }
 
             />

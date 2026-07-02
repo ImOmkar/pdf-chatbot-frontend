@@ -7,33 +7,27 @@ import {
 }
 from "lucide-react"
 
+import BottomSheet
+from "./BottomSheet"
+import { useState } from "react"
+
 export default function SessionItem({
 
     session,
-
     selectedSession,
-
     loadMessages,
-
     editingSession,
-
     editedTitle,
-
     setEditedTitle,
-
     setEditingSession,
-
     handleRename,
-
     openMenu,
-
     setOpenMenu,
-
     setConfirmModal,
-
     handleDelete,
-
-    onTogglePin
+    onTogglePin,
+    setSessionActionSheet,
+    setRenameModal
 
 }) {
 
@@ -78,8 +72,7 @@ export default function SessionItem({
                     flex
                     items-center
                     justify-between
-                "
-            >
+                ">
 
                 {
                     editingSession ===
@@ -191,8 +184,7 @@ export default function SessionItem({
                                 <span
                                     className="
                                         truncate
-                                    "
-                                >
+                                    ">
 
                                     {session.title}
 
@@ -207,28 +199,43 @@ export default function SessionItem({
                 <div                                     
                     className="
                         relative
-                    "
-                >
+                    ">
 
                     <MoreHorizontal
 
                         size={18}
 
-                        onClick={
-                            (e) => {
+                        onClick={(e) => {
 
-                                e.stopPropagation()
+                            e.stopPropagation()
 
-                                setOpenMenu(
+                            if (
+                                window.innerWidth < 1024
+                            ) {
 
-                                    openMenu === session.session_id
-                                        ? null
-                                        : session.session_id
+                                setSessionActionSheet({
 
-                                )
+                                    open: true,
+
+                                    session
+
+                                })
+
+                                return
 
                             }
-                        }
+
+                            setOpenMenu(
+
+                                openMenu === session.session_id
+
+                                    ? null
+
+                                    : session.session_id
+
+                            )
+
+                        }}
 
                         className="
                             cursor-pointer
@@ -243,51 +250,40 @@ export default function SessionItem({
                             <div
                                 className="
                                     absolute
-
                                     right-0
                                     top-8
-
                                     w-48
-
                                     bg-slate-900
-
                                     border
                                     border-slate-700
-
                                     rounded-2xl
-
                                     shadow-2xl
-
                                     overflow-hidden
-
                                     animate-in
                                     fade-in
                                     zoom-in-95
-
                                     z-50
                                 ">
 
                                 <button
 
-                                    onClick={
-                                        (e) => {
+                                    onClick={(e) => {
 
-                                            e.stopPropagation()
+                                        e.stopPropagation()
 
-                                            setEditingSession(
-                                                session.session_id
-                                            )
+                                        setRenameModal({
 
-                                            setEditedTitle(
-                                                session.title
-                                            )
+                                            open: true,
 
-                                            setOpenMenu(
-                                                null
-                                            )
+                                            session
 
-                                        }
-                                    }
+                                        })
+
+                                        setOpenMenu(
+                                            null
+                                        )
+
+                                    }}
 
                                     className="
                                         w-full
@@ -488,9 +484,7 @@ export default function SessionItem({
                     }
 
                 </div>
-
             </div>
-
         </div>
     )
 

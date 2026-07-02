@@ -62,7 +62,9 @@ export default function Sidebar({
     onNewChat,
 
     setConfirmModal,
-    onTogglePin
+    onTogglePin,
+    setSessionActionSheet,
+    setRenameModal
     
 }) {
 
@@ -823,6 +825,14 @@ export default function Sidebar({
 
                                     onTogglePin={
                                         onTogglePin
+                                    }
+
+                                    setSessionActionSheet={
+                                        setSessionActionSheet
+                                    }
+
+                                    setRenameModal={
+                                        setRenameModal
                                     }
 
                                 />
