@@ -1,8 +1,18 @@
 import axios from "axios"
 
+const API_URL =
+    import.meta.env.VITE_API_URL
+
+
+console.log("API url", API_URL)
+
 const api = axios.create({
-    baseURL: "http://127.0.0.1:8000"
+
+    baseURL: API_URL
+
 })
+
+console.log(api)
 
 export const createSession =
     () =>
@@ -104,7 +114,7 @@ export const exportChat =
         const response =
             await axios.get(
 
-                `http://127.0.0.1:8000/sessions/${sessionId}/export`,
+                `${API_URL}/sessions/${sessionId}/export`,
 
                 {
 
@@ -134,7 +144,7 @@ export const sendMessageStream =
         const response =
             await fetch(
 
-                "http://127.0.0.1:8000/chat/stream",
+                `${API_URL}/chat/stream`,
 
                 {
 

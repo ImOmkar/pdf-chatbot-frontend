@@ -239,7 +239,7 @@ export default function Sidebar({
 
     const filteredSessions =
 
-        sessions.filter(
+        sessions?.filter(
 
             session =>
 
@@ -504,7 +504,7 @@ export default function Sidebar({
 
                         {
 
-                            documents.map(
+                            documents?.map(
                                 (
                                     document
                                 ) => (
@@ -687,7 +687,7 @@ export default function Sidebar({
                     </div>
 
                     {
-                        filteredSessions.length === 0
+                        filteredSessions?.length === 0
 
                         ? (
 
@@ -717,7 +717,7 @@ export default function Sidebar({
 
                     : (
                         
-                        filteredSessions.map(
+                        filteredSessions?.map(
                             (session) => (
 
                                 <SessionItem
