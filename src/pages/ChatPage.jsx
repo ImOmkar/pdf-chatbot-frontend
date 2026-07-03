@@ -11,7 +11,8 @@ import {
     sendMessageStream,
     createSession,
     togglePinSession,
-    renameSession
+    renameSession,
+    deleteSession
 } from "../services/api"
 
 import {
@@ -39,9 +40,16 @@ from "../components/RenameSessionModal"
 import RenameSessionSheet
 from "../components/RenameSessionSheet"
 
+import SessionContextMenu
+from "../components/SessionContextMenu"
+
+import ConfirmBottomSheet
+from "../components/ConfirmBottomSheet"
+
 import toast
 from "react-hot-toast"
 import ConfirmModal from "../components/ConfirmModal"
+import SourceViewerSheet from "../components/SourceViewerSheet"
 
 export default function ChatPage() {
 
@@ -140,6 +148,19 @@ export default function ChatPage() {
         open: false,
 
         session: null
+
+    })
+
+    const [
+        sessionContextMenu,
+        setSessionContextMenu
+    ] = useState({
+
+        open: false,
+
+        session: null,
+
+        rect: null
 
     })
 
@@ -660,8 +681,7 @@ export default function ChatPage() {
             setLoading(false)
 
         }
-
-    
+   
     const handleSummarizeDocument =
     async () => {
 
@@ -967,6 +987,84 @@ export default function ChatPage() {
 
     }
 
+    const handleDeleteSession =
+    async (
+        sessionId
+    ) => {
+
+        try {
+
+            await deleteSession(
+                sessionId
+            )
+
+            await loadSessions()
+
+            toast.success(
+                "Session deleted."
+            )
+
+            if (
+                selectedSession?.session_id
+                === sessionId
+            ) {
+
+                setSelectedSession(
+                    null
+                )
+
+                setMessages([])
+            }
+
+        }
+        catch(error) {
+
+            console.log(error)
+
+            toast.error(
+                "Couldn't delete session."
+            )
+
+        }
+
+    }
+
+const openDeleteSessionConfirmation =
+    (session) => {
+
+        setSessionActionSheet({
+
+            open: false,
+
+            session: null
+
+        })
+
+        setConfirmModal({
+
+            open: true,
+
+            title: "Delete Session",
+
+            message:
+                `Are you sure you want to delete "${session.title}"?\n\nThis action cannot be undone.`,
+
+            confirmText: "Delete",
+
+            danger: true,
+
+            onConfirm: async () => {
+
+                await handleDeleteSession(
+                    session.session_id
+                )
+
+            }
+
+        })
+
+    }
+
     return (
 
         <div
@@ -1040,6 +1138,10 @@ export default function ChatPage() {
 
                 setRenameModal={
                     setRenameModal
+                }
+
+                setSessionContextMenu={
+                    setSessionContextMenu
                 }
             />
 
@@ -1137,6 +1239,24 @@ export default function ChatPage() {
 
             />
 
+            <SourceViewerSheet
+
+                open={
+                    sourceViewerOpen
+                }
+
+                source={
+                    selectedSource
+                }
+
+                onClose={() =>
+
+                    setSourceViewerOpen(false)
+
+                }
+
+            />
+
             <DocumentSummaryModal
 
                 open={
@@ -1225,6 +1345,62 @@ export default function ChatPage() {
 
             />
 
+            <ConfirmBottomSheet
+
+                open={
+                    confirmModal.open
+                }
+
+                title={
+                    confirmModal.title
+                }
+
+                message={
+                    confirmModal.message
+                }
+
+                confirmText={
+                    confirmModal.confirmText
+                }
+
+                danger={
+                    confirmModal.danger
+                }
+
+                onCancel={() =>
+
+                    setConfirmModal({
+
+                        ...confirmModal,
+
+                        open: false
+
+                    })
+
+                }
+
+                onConfirm={async () => {
+
+                    if (
+                        confirmModal.onConfirm
+                    ) {
+
+                        await confirmModal.onConfirm()
+
+                    }
+
+                    setConfirmModal({
+
+                        ...confirmModal,
+
+                        open: false
+
+                    })
+
+                }}
+
+            />
+
             <SessionActionSheet
                 open={
                     sessionActionSheet.open
@@ -1256,13 +1432,9 @@ export default function ChatPage() {
 
                 }}
 
-                onDelete={(session) => {
-
-                    // we'll implement next
-
-                    console.log(session)
-
-                }}
+                onDelete={
+                    openDeleteSessionConfirmation
+                }
 
             />
 
@@ -1335,6 +1507,78 @@ export default function ChatPage() {
                     )
 
                 }
+
+            />
+
+            <SessionContextMenu
+
+                open={
+                    sessionContextMenu.open
+                }
+
+                session={
+                    sessionContextMenu.session
+                }
+
+                rect={
+                    sessionContextMenu.rect
+                }
+
+                onClose={() =>
+
+                    setSessionContextMenu({
+
+                        open: false,
+
+                        session: null,
+
+                        rect: null
+
+                    })
+
+                }
+
+                onRename={(session) => {
+
+                    setRenameModal({
+
+                        open: true,
+
+                        session
+
+                    })
+
+                }}
+
+                onTogglePin={
+                    handleTogglePin
+                }
+
+                onDelete={(session) => {
+
+                    setConfirmModal({
+
+                        open: true,
+
+                        title: "Delete Session",
+
+                        message: `Are you sure you want to delete "${session.title}"?\n\nThis action cannot be undone.`,
+
+                        confirmText: "Delete",
+
+                        danger: true,
+
+                        onConfirm: async () => {
+
+                            await handleDeleteSession(
+                                session.session_id
+                            )
+
+                        }
+
+                    })
+
+                }}
 
             />
 

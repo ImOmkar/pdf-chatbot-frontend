@@ -64,7 +64,9 @@ export default function Sidebar({
     setConfirmModal,
     onTogglePin,
     setSessionActionSheet,
-    setRenameModal
+    setRenameModal,
+
+    setSessionContextMenu
     
 }) {
 
@@ -166,47 +168,6 @@ export default function Sidebar({
             }
         }
 
-    const handleDelete =
-        async (
-            sessionId
-        ) => {
-
-            try {
-
-                await deleteSession(
-                    sessionId
-                )
-
-                await loadSessions()
-
-                toast.success(
-                    "Session deleted."
-                )
-
-                if (
-                    selectedSession?.session_id
-                    === sessionId
-                ) {
-
-                    setSelectedSession(
-                        null
-                    )
-
-                    setMessages([])
-                }
-
-            }
-            catch(error) {
-
-                console.log(error)
-
-                toast.error(
-                    "Couldn't rename session."
-                )
-
-            }
-
-        }
 
     const handleRename =
         async (
@@ -803,13 +764,13 @@ export default function Sidebar({
                                         setEditingSession
                                     }
 
-                                    handleRename={
-                                        handleRename
-                                    }
+                                    // handleRename={
+                                    //     handleRename
+                                    // }
 
-                                    handleDelete={
-                                        handleDelete
-                                    }
+                                    // handleDelete={
+                                    //     handleDelete
+                                    // }
 
                                     openMenu={
                                         openMenu
@@ -833,6 +794,10 @@ export default function Sidebar({
 
                                     setRenameModal={
                                         setRenameModal
+                                    }
+
+                                    setSessionContextMenu={
+                                        setSessionContextMenu
                                     }
 
                                 />

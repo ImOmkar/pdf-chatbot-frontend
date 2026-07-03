@@ -7,8 +7,6 @@ from "lucide-react"
 import ReactMarkdown
 from "react-markdown"
 
-
-
 export default function DocumentSummaryModal({
 
     open,

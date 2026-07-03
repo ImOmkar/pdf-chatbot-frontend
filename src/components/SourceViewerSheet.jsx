@@ -1,5 +1,5 @@
 import {
-    X,
+
     FileText,
     Check,
     Copy
@@ -7,8 +7,9 @@ import {
 from "lucide-react"
 import { useState } from "react"
 import toast from "react-hot-toast"
+import BottomSheet from "./BottomSheet"
 
-export default function SourceViewerModal({
+export default function SourceViewerSheet({
 
     open,
 
@@ -164,47 +165,22 @@ const highlightText =
 
     return (
 
-        <div
-            onClick={onClose}
-            className="
-                hidden
-                lg:flex
+        <BottomSheet
+            open={open}
 
-                fixed
-                inset-0
-
-                bg-black/60
-
-                backdrop-blur-sm
-
-                items-center
-                justify-center
-
-                z-50
-            ">
+            onClose={onClose}
+    >
 
             <div
-                onClick={(e) =>
-
-                    e.stopPropagation()
-
-                }
                 className="
-                    w-full
-                    max-w-4xl
 
-                    mx-6
 
-                    bg-slate-900
+                rounded-t-2xl
 
-                    border
-                    border-slate-800
+                bg-slate-900
 
-                    rounded-2xl
 
-                    shadow-2xl
-
-                    overflow-hidden
+                overflow-hidden
                 "
             >
 
@@ -242,6 +218,7 @@ const highlightText =
 
                             <h2
                                 className="
+                                    truncate
                                     text-white
                                     font-semibold
                                 "
@@ -271,33 +248,12 @@ const highlightText =
 
                     </div>
 
-                    <button
-
-                        onClick={onClose}
-
-                        className="
-                            p-2
-                            dark:text-white
-                            rounded-lg
-
-                            hover:bg-slate-800
-
-                            transition-all
-                        "
-                    >
-
-                        <X  
-                            size={18}
-                        />
-
-                    </button>
-
                 </div>
 
                 {/* Body */}
                 <div
                     className="
-                        max-h-[70vh]
+                        max-h-[75vh]
 
                         overflow-y-auto
 
@@ -516,7 +472,7 @@ const highlightText =
 
             </div>
 
-        </div>
+        </BottomSheet>
 
     )
 

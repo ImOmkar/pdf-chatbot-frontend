@@ -152,8 +152,6 @@ export default function SessionActionSheet({
                         session
                     )
 
-                    onClose()
-
                 }}
 
                 className="

@@ -22,7 +22,15 @@ export default function BottomSheet({
 
             <div
 
-                onClick={onClose}
+                onClick={() => {
+
+                    console.log(
+                        "Backdrop clicked"
+                    )
+
+                    onClose()
+
+                }}
 
                 className="
                     absolute
@@ -36,6 +44,11 @@ export default function BottomSheet({
             {/* Sheet */}
 
             <div
+                onClick={(e) =>
+
+                    e.stopPropagation()
+
+                }
                 className="
                     absolute
 

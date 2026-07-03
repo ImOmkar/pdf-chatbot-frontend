@@ -20,14 +20,16 @@ export default function SessionItem({
     editedTitle,
     setEditedTitle,
     setEditingSession,
-    handleRename,
+    // handleRename,
     openMenu,
     setOpenMenu,
     setConfirmModal,
-    handleDelete,
+    // handleDelete,
     onTogglePin,
     setSessionActionSheet,
-    setRenameModal
+    setRenameModal,
+
+    setSessionContextMenu   
 
 }) {
 
@@ -225,15 +227,28 @@ export default function SessionItem({
 
                             }
 
-                            setOpenMenu(
+                            // setOpenMenu(
 
-                                openMenu === session.session_id
+                            //     openMenu === session.session_id
 
-                                    ? null
+                            //         ? null
 
-                                    : session.session_id
+                            //         : session.session_id
 
-                            )
+                            // )
+
+                            const rect =
+                                e.currentTarget.getBoundingClientRect()
+
+                            setSessionContextMenu({
+
+                                open: true,
+
+                                session,
+
+                                rect
+
+                            })
 
                         }}
 
