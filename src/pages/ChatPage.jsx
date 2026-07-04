@@ -1212,6 +1212,10 @@ const openDeleteSessionConfirmation =
                         <WelcomeScreen 
                             onStartChat={handleNewChat} 
                             setSidebarOpen={setSidebarOpen} 
+                            onUpload={
+                                handleUpload
+                            }
+                            
                         />
 
                     )

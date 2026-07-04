@@ -6,13 +6,23 @@ import {
     FileText
 } from "lucide-react"
 
+import {
+    useRef,
+    useState
+}
+from "react"
+
+import UploadDropZone
+from "./UploadDropZone"
+
 import ActionCard
 from "./ActionCard"
 
 export default function WelcomeScreen({ 
     
     onStartChat, 
-    setSidebarOpen 
+    setSidebarOpen,
+    onUpload
 
 }) {
 
@@ -306,28 +316,14 @@ export default function WelcomeScreen({
 
                         />
 
-                        <ActionCard
+                        <UploadDropZone onUpload={onUpload} />
 
-                            title="Upload PDF"
-
-                            description="Import a document"
-
-                            icon={
-
-                                <Upload
-                                    size={22}
-                                    className="
-                                        text-emerald-400
-                                    "
-                                />
-
-                            }
-
-                            accent="
-                                bg-emerald-500/10
-                            "
-
-                        />
+                        {/* <div
+                            onClick={() => console.log("Hello")}
+                            className="bg-red-500 p-20 cursor-pointer"
+                        >
+                            Test
+                        </div> */}
 
                         <ActionCard
 
