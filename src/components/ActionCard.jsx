@@ -104,6 +104,7 @@ export default function ActionCard({
 
                     <p
                         className="
+                            
                             text-sm
                             text-slate-400
                         "

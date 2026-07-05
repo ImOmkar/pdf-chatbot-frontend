@@ -73,6 +73,40 @@ export default function UploadDropZone({
     return (
 
         <>
+            
+            <input
+
+                ref={fileInputRef}
+
+                type="file"
+
+                accept=".pdf"
+
+                className="hidden"
+
+                onChange={async (e) => {
+
+                    const file =
+                        e.target.files?.[0]
+
+                    if (
+                        !file
+                    ) {
+
+                        return
+
+                    }
+
+                    handleFileSelect(
+                        file
+                    )
+
+                    e.target.value = ""
+
+                }}
+
+            />
+
             {/* desktop */}
             <div
                 className="
@@ -84,19 +118,23 @@ export default function UploadDropZone({
 
                     onClick={() => {
 
-                        console.log(
-                            "Dropzone clicked"
-                        )
+                        if (uploading) {
 
-                        console.log(
-                            fileInputRef.current
-                        )
+                            return
+
+                        }
 
                         fileInputRef.current?.click()
 
                     }}
 
                     onDragOver={(e) => {
+
+                        if (uploading) {
+
+                            return
+
+                        }
 
                         e.preventDefault()
 
@@ -117,6 +155,12 @@ export default function UploadDropZone({
                     }}
 
                     onDrop={async (e) => {
+
+                        if (uploading) {
+
+                            return
+
+                        }
 
                         e.preventDefault()
 
@@ -165,39 +209,6 @@ export default function UploadDropZone({
                         transition-all
                         duration-200
 
-                        {
-
-                            isDragging
-
-                                ? (
-
-                                    <FileUp
-
-                                        size={34}
-
-                                        className="
-                                            text-blue-400
-                                        "
-
-                                    />
-
-                                )
-
-                                : (
-
-                                    <Upload
-
-                                        size={32}
-
-                                        className="
-                                            text-blue-400
-                                        "
-
-                                    />
-
-                                )
-
-                        }
                     `}>
 
                     <div
@@ -270,138 +281,6 @@ export default function UploadDropZone({
 
                     </p>
 
-                    <input
-
-                        ref={fileInputRef}
-
-                        type="file"
-
-                        accept=".pdf"
-
-                        className="hidden"
-
-                        onChange={async (e) => {
-
-                            const file =
-                                e.target.files?.[0]
-
-                            if (
-                                !file
-                            ) {
-
-                                return
-
-                            }
-
-                            handleFileSelect(
-                                file
-                            )
-
-                            e.target.value = ""
-
-                        }}
-
-                    />
-
-
-                    {/* {
-                        selectedFile && (
-
-                            <div
-                                className="
-                                    mt-6
-
-                                    rounded-2xl
-
-                                    border
-                                    border-slate-700
-
-                                    bg-slate-900
-
-                                    p-4
-                                "
-                            >
-
-                                <div
-                                    className="
-                                        flex
-                                        items-center
-                                        justify-between
-                                        gap-3
-                                    "
-                                >
-
-                                    <div
-                                        className="
-                                            min-w-0
-                                        "
-                                    >
-
-                                        <p
-                                            className="
-                                                truncate
-
-                                                font-medium
-
-                                                text-white
-                                            "
-                                        >
-
-                                            📄 {selectedFile.name}
-
-                                        </p>
-
-                                        <p
-                                            className="
-                                                text-sm
-
-                                                text-slate-400
-                                            "
-                                        >
-
-                                            {
-                                                (
-                                                    selectedFile.size /
-                                                    1024 /
-                                                    1024
-                                                ).toFixed(2)
-                                            } MB
-
-                                        </p>
-
-                                    </div>
-
-                                    <button
-
-                                        onClick={(e) => {
-
-                                            e.stopPropagation()
-
-                                            setSelectedFile(
-                                                null
-                                            )
-
-                                        }}
-
-                                        className="
-                                            text-red-400
-
-                                            hover:text-red-300
-                                        "
-                                    >
-
-                                        ✕
-
-                                    </button>
-
-                                </div>
-
-                            </div>
-
-                        )
-                    } */}
-
-
 
                 </div>
 
@@ -414,11 +293,17 @@ export default function UploadDropZone({
 
                 <div
 
-                    onClick={() =>
+                    onClick={() => {
+
+                        if (uploading) {
+
+                            return
+
+                        }
 
                         fileInputRef.current?.click()
 
-                    }
+                    }}
 
                     className="
                         group
@@ -529,21 +414,6 @@ export default function UploadDropZone({
 
                 </div>
 
-                {/* <SelectedFileCard
-
-                    file={
-                        selectedFile
-                    }
-
-                    onRemove={() =>
-
-                        setSelectedFile(
-                            null
-                        )
-
-                    }
-
-                /> */}
             </div>
 
             <SelectedFileCard
@@ -551,6 +421,12 @@ export default function UploadDropZone({
                 file={
                     selectedFile
                 }
+
+                disabled={
+                    uploading
+                }
+
+                uploading={uploading}
 
                 onRemove={() =>
 
@@ -570,6 +446,8 @@ export default function UploadDropZone({
                         onClick={async () => {
 
                             try {
+
+                                console.log(uploading)
 
                                 setUploading(
                                     true
@@ -643,35 +521,3 @@ export default function UploadDropZone({
     )
 
 }
-
-
-// export default function UploadDropZone() {
-
-//     return (
-
-//         <div
-//             onClick={() => {
-
-//                 alert("clicked")
-
-//             }}
-
-//             className="
-//                 bg-red-500
-//                 p-10
-//             "
-//         >
-
-//             TEST UPLOAD DROPZONE
-
-//         </div>
-
-//     )
-
-// }
-
-// export default function UploadDropZone() {
-
-//     throw new Error("UploadDropZone loaded")
-
-// }

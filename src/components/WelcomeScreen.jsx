@@ -97,6 +97,7 @@ export default function WelcomeScreen({
 
                 <div
                     className="
+                        py-4
                         max-w-4xl
                         w-full
                         text-center
@@ -317,13 +318,6 @@ export default function WelcomeScreen({
                         />
 
                         <UploadDropZone onUpload={onUpload} />
-
-                        {/* <div
-                            onClick={() => console.log("Hello")}
-                            className="bg-red-500 p-20 cursor-pointer"
-                        >
-                            Test
-                        </div> */}
 
                         <ActionCard
 

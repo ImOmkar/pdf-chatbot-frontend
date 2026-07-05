@@ -1148,8 +1148,8 @@ const openDeleteSessionConfirmation =
             <div
                 className="
                     flex-1
-                    flex
-                    flex-col
+                    overflow-y-auto
+                    bg-slate-950
                 "
             >
 

@@ -8,13 +8,42 @@ export default function SelectedFileCard({
 
     file,
 
-    onRemove
+    onRemove,
+
+    uploading = false,
+
+    disabled = false
 
 }) {
 
     if (!file) {
 
         return null
+
+    }
+
+
+    const formatFileSize = (bytes) => {
+
+        if (bytes < 1024) {
+
+            return `${bytes} B`
+
+        }
+
+        if (bytes < 1024 * 1024) {
+
+            return `${(bytes / 1024).toFixed(1)} KB`
+
+        }
+
+        if (bytes < 1024 * 1024 * 1024) {
+
+            return `${(bytes / (1024 * 1024)).toFixed(2)} MB`
+
+        }
+
+        return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`
 
     }
 
@@ -101,20 +130,37 @@ export default function SelectedFileCard({
 
                         <p
                             className="
+                                text-left
                                 text-sm
                                 text-slate-400
-                            "
-                        >
+                            ">
 
-                            {
-                                (
-                                    file.size /
-                                    1024 /
-                                    1024
-                                ).toFixed(2)
-                            } MB
+                            {formatFileSize(file.size)}
 
                         </p>
+
+                        {
+
+                            uploading && (
+
+                                <p
+                                    className="
+                                        mt-1
+                                        text-left
+                                        text-xs
+
+                                        text-blue-400
+                                    "
+                                >
+
+                                    Uploading...
+                                    Please wait.
+
+                                </p>
+
+                            )
+
+                        }
 
                     </div>
 
@@ -124,20 +170,32 @@ export default function SelectedFileCard({
 
                     onClick={onRemove}
 
-                    className="
+                    disabled={disabled}
+
+                    className={`
                         p-2
 
                         rounded-lg
 
-                        text-slate-400
-
-                        hover:bg-slate-800
-
-                        hover:text-red-400
-
                         transition
-                    "
-                >
+
+                        ${
+                            disabled
+
+                                ? `
+                                    cursor-not-allowed
+                                    opacity-40
+                                `
+
+                                : `
+                                    text-slate-400
+
+                                    hover:bg-slate-800
+
+                                    hover:text-red-400
+                                `
+                        }
+                    `}>
 
                     <X size={18} />
 
