@@ -49,9 +49,14 @@ from "../components/ConfirmBottomSheet"
 import FileDropOverlay
 from "../components/FileDropOverlay"
 
+import SelectedDocumentsBar
+from "../components/SelectedDocumentsBar"
+
 import toast
 from "react-hot-toast"
+
 import ConfirmModal from "../components/ConfirmModal"
+
 import SourceViewerSheet from "../components/SourceViewerSheet"
 
 export default function ChatPage() {
@@ -70,6 +75,13 @@ export default function ChatPage() {
     const [input, setInput] = useState("")
     const [documents, setDocuments] = useState([])
     const [activeDocument, setActiveDocument] = useState(null)
+    const [
+
+        selectedDocuments,
+
+        setSelectedDocuments
+
+    ] = useState([])
 
     const [documentInfo, setDocumentInfo] = useState(null)
 
@@ -201,9 +213,16 @@ export default function ChatPage() {
 
     ] = useState(false)
 
+
+
     const dragCounter = useRef(0)
     const abortControllerRef = useRef(null)
 
+    const getFileName =
+        (path) =>
+            path
+                .split(/[/\\]/)
+                .pop()
 
     const handleNewChat =
     async () => {
@@ -380,14 +399,10 @@ export default function ChatPage() {
             question,
 
             regenerate_message_id:
-                regenerateMessageId
+                regenerateMessageId,
 
-        }
-
-        if (activeDocument) {
-
-            payload.document =
-                activeDocument
+            documents:
+                selectedDocuments
 
         }
 
@@ -1058,41 +1073,41 @@ export default function ChatPage() {
 
     }
 
-const openDeleteSessionConfirmation =
-    (session) => {
+    const openDeleteSessionConfirmation =
+        (session) => {
 
-        setSessionActionSheet({
+            setSessionActionSheet({
 
-            open: false,
+                open: false,
 
-            session: null
+                session: null
 
-        })
+            })
 
-        setConfirmModal({
+            setConfirmModal({
 
-            open: true,
+                open: true,
 
-            title: "Delete Session",
+                title: "Delete Session",
 
-            message:
-                `Are you sure you want to delete "${session.title}"?\n\nThis action cannot be undone.`,
+                message:
+                    `Are you sure you want to delete "${session.title}"?\n\nThis action cannot be undone.`,
 
-            confirmText: "Delete",
+                confirmText: "Delete",
 
-            danger: true,
+                danger: true,
 
-            onConfirm: async () => {
+                onConfirm: async () => {
 
-                await handleDeleteSession(
-                    session.session_id
-                )
+                    await handleDeleteSession(
+                        session.session_id
+                    )
 
-            }
+                }
 
-        })
+            })
 
-    }
+        }
 
     const handleDragEnter = (e) => {
 
@@ -1157,15 +1172,30 @@ const openDeleteSessionConfirmation =
 
     }
 
+    useEffect(() => {
+
+        if (!activeDocument) {
+
+            setSelectedDocuments([])
+
+            return
+
+        }
+
+        setSelectedDocuments([
+
+            activeDocument
+
+        ])
+
+    }, [activeDocument])
+
     return (
 
         <div
             onDragEnter={handleDragEnter}
-            
             onDragOver={handleDragOver}
-
             onDragLeave={handleDragLeave}
-
             onDrop={handleDrop}
 
             className="
@@ -1243,6 +1273,16 @@ const openDeleteSessionConfirmation =
                 setSessionContextMenu={
                     setSessionContextMenu
                 }
+
+                selectedDocuments={
+                    selectedDocuments
+                }
+
+                setSelectedDocuments={
+                    setSelectedDocuments
+                }
+
+                getFileName={getFileName}
             />
 
             <div
@@ -1301,6 +1341,23 @@ const openDeleteSessionConfirmation =
                                 setSidebarOpen={
                                     setSidebarOpen
                                 }
+                            />
+
+                            
+                            <SelectedDocumentsBar
+
+                                selectedDocuments={
+                                    selectedDocuments
+                                }
+
+                                setSelectedDocuments={
+                                    setSelectedDocuments
+                                }
+
+                                getFileName={
+                                    getFileName
+                                }
+
                             />
 
                             <MessageInput

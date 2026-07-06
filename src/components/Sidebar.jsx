@@ -54,6 +54,9 @@ export default function Sidebar({
     activeDocument,
     setActiveDocument,
 
+    selectedDocuments,
+    setSelectedDocuments,
+
     loadDocuments,
 
     sidebarOpen,
@@ -66,7 +69,9 @@ export default function Sidebar({
     setSessionActionSheet,
     setRenameModal,
 
-    setSessionContextMenu
+    setSessionContextMenu,
+
+    getFileName
     
 }) {
 
@@ -94,11 +99,11 @@ export default function Sidebar({
 
     const sidebarRef = useRef(null)
 
-    const getFileName =
-        (path) =>
-            path
-                .split(/[/\\]/)
-                .pop()
+    // const getFileName =
+    //     (path) =>
+    //         path
+    //             .split(/[/\\]/)
+    //             .pop()
 
     const handleNewChat =
         async () => {
@@ -547,29 +552,44 @@ export default function Sidebar({
                                             getFileName
                                         }
 
+                                        selectedDocuments={selectedDocuments}
+
+                                        setSelectedDocuments={setSelectedDocuments}
+
                                     />
 
                                 )
                             )
                         }
 
-                        {activeDocument && (
+                        {selectedDocuments.length > 0 && (
+
                             <button
+
                                 onClick={() =>
-                                    setActiveDocument(null)
+
+                                    setSelectedDocuments([])
+
                                 }
 
                                 className="
-                                    
                                     mt-3
+
                                     text-sm
+
                                     text-slate-400
+
                                     hover:text-white
+
                                     transition-colors
                                 "
+
                             >
-                                Clear Document Filter
+
+                                Clear Document Selection
+
                             </button>
+
                         )}
                     </div>
 

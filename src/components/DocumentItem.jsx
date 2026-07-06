@@ -10,9 +10,12 @@ export default function DocumentItem({
 
     documentInfo,
 
-    activeDocument,
+    // activeDocument,
 
-    setActiveDocument,
+    // setActiveDocument,
+
+    selectedDocuments,
+    setSelectedDocuments,
 
     loadDocumentInfo,
 
@@ -33,22 +36,42 @@ export default function DocumentItem({
             gap-3
             w-full">
             <div
-                onClick={
-                    async () => {
+                onClick={async () => {
 
-                        setActiveDocument(
+                    setSelectedDocuments((prev) => {
+
+                        const isSelected =
+
+                            prev.includes(document)
+
+                        if (isSelected) {
+
+                            return prev.filter(
+
+                                (d) => d !== document
+
+                            )
+
+                        }
+
+                        return [
+
+                            ...prev,
+
                             document
-                        )
 
-                        await loadDocumentInfo(
-                            document
-                        )
+                        ]
 
-                    }
-                }
+                    })
+
+                    await loadDocumentInfo(
+                        document
+                    )
+
+                }}
 
                 className={`
-                     flex-1
+                    flex-1
                     min-w-0
 
                     flex
@@ -60,8 +83,8 @@ export default function DocumentItem({
                     cursor-pointer
 
                     ${
-                        activeDocument === document
-                        ? "bg-blue-600 text-white"
+                        selectedDocuments.includes(document)
+                        ? "bg-blue-600 text-white my-1"
                         : "text-slate-300 hover:bg-slate-800"
                     }
                 `}>
