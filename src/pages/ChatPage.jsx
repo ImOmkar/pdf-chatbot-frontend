@@ -46,6 +46,9 @@ from "../components/SessionContextMenu"
 import ConfirmBottomSheet
 from "../components/ConfirmBottomSheet"
 
+import FileDropOverlay
+from "../components/FileDropOverlay"
+
 import toast
 from "react-hot-toast"
 import ConfirmModal from "../components/ConfirmModal"
@@ -173,6 +176,32 @@ export default function ChatPage() {
         false
     )
     
+    const [
+
+        isDraggingFile,
+
+        setIsDraggingFile
+
+    ] = useState(false)
+
+
+    const [
+
+        selectedFile,
+
+        setSelectedFile
+
+    ] = useState(null)
+
+    const [
+
+        uploading,
+
+        setUploading
+
+    ] = useState(false)
+
+    const dragCounter = useRef(0)
     const abortControllerRef = useRef(null)
 
 
@@ -1065,15 +1094,86 @@ const openDeleteSessionConfirmation =
 
     }
 
+    const handleDragEnter = (e) => {
+
+        e.preventDefault()
+
+        dragCounter.current += 1
+
+        setIsDraggingFile(true)
+
+    }
+
+    const handleDragOver = (e) => {
+
+        e.preventDefault()
+
+    }
+
+    const handleDragLeave = (e) => {
+
+        e.preventDefault()
+
+        dragCounter.current -= 1
+
+        if (dragCounter.current <= 0) {
+
+            dragCounter.current = 0
+
+            setIsDraggingFile(false)
+
+        }
+
+    }
+
+    const handleDrop = async (e) => {
+
+        e.preventDefault()
+
+        setIsDraggingFile(false)
+
+        dragCounter.current = 0
+
+        setIsDraggingFile(false)
+
+        const file =
+
+            e.dataTransfer.files?.[0]
+
+        if (
+
+            !file ||
+
+            file.type !== "application/pdf"
+
+        ) {
+
+            return
+
+        }
+
+        // await handleUpload(file)
+        setSelectedFile(file)
+
+    }
+
     return (
 
         <div
+            onDragEnter={handleDragEnter}
+            
+            onDragOver={handleDragOver}
+
+            onDragLeave={handleDragLeave}
+
+            onDrop={handleDrop}
+
             className="
                 h-screen
                 flex
                 bg-gradient-to-b
-              from-slate-950
-              to-slate-900
+                from-slate-950
+                to-slate-900
             ">
 
             <Sidebar
@@ -1148,15 +1248,21 @@ const openDeleteSessionConfirmation =
             <div
                 className="
                     flex-1
-                    overflow-y-auto
+                    flex
+                    flex-col
                     bg-slate-950
-                "
-            >
+                    min-h-0
+                ">
 
                 {
                     selectedSession ? (
-
-                        <>
+                        <div
+                            className="
+                                flex-1
+                                flex
+                                flex-col
+                                min-h-0
+                            ">
 
                             <ChatWindow
                                 messages={messages}
@@ -1204,35 +1310,39 @@ const openDeleteSessionConfirmation =
                                 onStop={handleStop}
                                 loading={loading}
                             />
-
-                        </>
-
+                        </div>
                     ) : (
+                        <div
+                            className="
+                                flex-1
+                                overflow-y-auto
+                            ">
+                            <WelcomeScreen 
+                                onStartChat={handleNewChat} 
+                                setSidebarOpen={setSidebarOpen} 
+                                onUpload={
+                                    handleUpload
+                                }
+                                selectedFile={selectedFile}
 
-                        <WelcomeScreen 
-                            onStartChat={handleNewChat} 
-                            setSidebarOpen={setSidebarOpen} 
-                            onUpload={
-                                handleUpload
-                            }
-                            
-                        />
+                                setSelectedFile={setSelectedFile}
 
+                                uploading={uploading}
+
+                                setUploading={setUploading}
+                            />
+                        </div>
                     )
                 }
-
             </div>
 
             <SourceViewerModal
-
                 open={
                     sourceViewerOpen
                 }
-
                 source={
                     selectedSource
                 }
-
                 onClose={
                     () =>
 
@@ -1240,47 +1350,37 @@ const openDeleteSessionConfirmation =
                             false
                         )
                 }
-
             />
 
             <SourceViewerSheet
-
                 open={
                     sourceViewerOpen
                 }
-
                 source={
                     selectedSource
                 }
-
                 onClose={() =>
 
                     setSourceViewerOpen(false)
 
                 }
-
             />
 
             <DocumentSummaryModal
-
                 open={
                     summaryOpen
                 }
-
                 summary={
                     documentSummary
                 }
-
                 loading={
                     summaryLoading
                 }
-
                 document={
                     activeDocument
                         ?.split(/[/\\]/)
                         .pop()
                 }
-
                 onClose={
                     () =>
 
@@ -1288,20 +1388,16 @@ const openDeleteSessionConfirmation =
                             false
                         )
                 }
-
             />
 
             {/* confirm modal */}
             <ConfirmModal
-
                 open={
                     confirmModal.open
                 }
-
                 title={
                     confirmModal.title
                 }
-
                 message={
                     confirmModal.message
                 }
@@ -1583,6 +1679,15 @@ const openDeleteSessionConfirmation =
                     })
 
                 }}
+
+            />
+
+
+            <FileDropOverlay
+
+                open={
+                    isDraggingFile
+                }
 
             />
 

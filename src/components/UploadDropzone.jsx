@@ -16,19 +16,20 @@ from "./SelectedFileCard.jsx"
 
 export default function UploadDropZone({
 
-    onUpload
+    selectedFile,
+
+    setSelectedFile,
+
+    onUpload,
+
+    uploading,
+
+    setUploading
 
 }) {
 
-    const [
-        selectedFile,
-        setSelectedFile
-    ] = useState(null)
 
-    const [
-        uploading,
-        setUploading
-    ] = useState(false)
+
 
     const handleFileSelect = (
         file

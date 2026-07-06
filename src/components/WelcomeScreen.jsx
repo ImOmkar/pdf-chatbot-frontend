@@ -22,9 +22,19 @@ export default function WelcomeScreen({
     
     onStartChat, 
     setSidebarOpen,
-    onUpload
+    onUpload,
+
+    selectedFile,
+    setSelectedFile,
+    uploading,
+    setUploading
 
 }) {
+
+    // const [
+    //     selectedFile,
+    //     setSelectedFile
+    // ] = useState(null)
 
     return (
         <>
@@ -88,11 +98,12 @@ export default function WelcomeScreen({
 
             <div
                 className="
-                    flex-1
+                    min-h-full
                     flex
                     items-center
                     justify-center
                     px-6
+                    py-6
                 ">
 
                 <div
@@ -317,7 +328,19 @@ export default function WelcomeScreen({
 
                         />
 
-                        <UploadDropZone onUpload={onUpload} />
+                        <UploadDropZone
+
+                            selectedFile={selectedFile}
+
+                            setSelectedFile={setSelectedFile}
+
+                            uploading={uploading}
+
+                            setUploading={setUploading}
+
+                            onUpload={onUpload}
+
+                        />
 
                         <ActionCard
 
