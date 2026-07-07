@@ -1,56 +1,136 @@
 # DocMind AI – Frontend
 
-Frontend application for **DocMind AI**, an AI-powered document assistant that enables users to upload, manage, and chat with one or multiple PDF documents using Retrieval-Augmented Generation (RAG).
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
+![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-38BDF8?logo=tailwind-css)
+![Axios](https://img.shields.io/badge/Axios-HTTP-5A29E4)
+![License](https://img.shields.io/badge/License-Portfolio-blue)
+
+A modern React frontend for **DocMind AI**, an AI-powered document assistant that enables users to upload, manage, summarize, and chat with one or multiple PDF documents using **Retrieval-Augmented Generation (RAG)**.
 
 Built with **React**, **Vite**, **Tailwind CSS**, and **Axios**.
 
 ---
 
-## ✨ Features
+## 🌐 Live Demo
 
-### 📄 Document Management
+**Frontend:**  
+https://docmindai-lake.vercel.app
+
+**Backend API:**  
+https://docmindai-r0xj.onrender.com
+
+**Backend Repository:**  
+https://github.com/ImOmkar/pdf-chatbot
+
+---
+
+## 📸 Screenshots
+
+<table>
+<tr>
+<td align="center">
+
+### Welcome Screen
+
+<img src="./screenshots/welcome-screen.png" width="450"/>
+
+</td>
+
+<td align="center">
+
+### Chat Interface
+
+<img src="./screenshots/chat-interface.png" width="450"/>
+
+</td>
+</tr>
+
+<tr>
+<td align="center">
+
+### Multi-Document Selection
+
+<img src="./screenshots/multi-document-selection.png" width="450"/>
+
+</td>
+
+<td align="center">
+
+### Mobile View
+
+<img src="./screenshots/mobile-view.png" width="230"/>
+
+</td>
+</tr>
+
+<tr>
+<td colspan="2" align="center">
+
+### About Dialog
+
+<img src="./screenshots/about-dialog.png" width="700"/>
+
+</td>
+</tr>
+</table>
+
+---
+
+# ✨ Features
+
+## 📄 Document Management
 
 - Upload PDF documents
-- Drag & Drop PDF upload
+- Drag & Drop upload
 - Multi-document selection
 - Remove individual selected documents
 - Document summaries
-- View uploaded documents
-- Delete documents
+- Browse uploaded PDFs
+- Delete uploaded documents
 
-### 💬 AI Chat Experience
+---
 
+## 💬 AI Chat Experience
+
+- AI-powered conversations with PDFs
+- Chat with multiple documents simultaneously
 - Streaming AI responses
-- Chat with multiple PDFs simultaneously
 - Source citations with page references
 - Suggested follow-up questions
-- Regenerate AI responses
+- Regenerate responses
 - Stop response generation
 - Export conversations
 
-### 📂 Session Management
+---
 
-- Create new conversations
-- Rename chats
+## 📂 Session Management
+
+- Create new chats
+- Rename conversations
 - Pin / Unpin sessions
 - Delete sessions
 - Search conversations
 - Persistent chat history
 
-### 🎨 User Experience
+---
 
-- Responsive desktop & mobile layout
+## 🎨 User Experience
+
+- Responsive desktop & mobile UI
 - Independent sidebar and chat scrolling
-- Mobile bottom sheets
-- Modern dark UI
-- Loading states
+- Mobile Bottom Sheets
+- Desktop Modals
+- Beautiful dark theme
+- Drag & Drop overlay
+- Loading indicators
 - Confirmation dialogs
 - About dialog
-- Drag & Drop overlay
+- Keyboard-friendly interactions
 
 ---
 
-## 🛠 Tech Stack
+# 🛠 Tech Stack
 
 - React
 - Vite
@@ -62,38 +142,36 @@ Built with **React**, **Vite**, **Tailwind CSS**, and **Axios**.
 
 ---
 
-## 📁 Project Structure
+# 🏗 Project Structure
 
 ```text
 src/
+├── assets/
 ├── components/
 ├── pages/
 ├── services/
-├── hooks/
-├── utils/
-├── assets/
-└── ...
+...
 ```
 
 ---
 
-## 🚀 Getting Started
+# 🚀 Getting Started
 
-### Clone the repository
+## Clone Repository
 
 ```bash
-git clone https://github.com/<your-username>/docmind-ai-frontend.git
+git clone https://github.com/ImOmkar/pdf-chatbot-frontend.git
 
-cd docmind-ai-frontend
+cd pdf-chatbot-frontend
 ```
 
-### Install dependencies
+## Install Dependencies
 
 ```bash
 npm install
 ```
 
-### Configure environment variables
+## Configure Environment Variables
 
 Create a `.env` file.
 
@@ -101,27 +179,27 @@ Create a `.env` file.
 VITE_API_URL=http://localhost:8000
 ```
 
-### Start development server
+## Run Development Server
 
 ```bash
 npm run dev
 ```
 
-The application will be available at:
+Application will be available at:
 
-```
+```text
 http://localhost:5173
 ```
 
 ---
 
-## 🌐 Production Build
+# 🌐 Production Build
 
 ```bash
 npm run build
 ```
 
-Preview locally
+Preview production build:
 
 ```bash
 npm run preview
@@ -129,9 +207,9 @@ npm run preview
 
 ---
 
-## 🔗 Backend
+# 🔗 Backend
 
-This frontend communicates with the **DocMind AI Backend** built using:
+This frontend communicates with the **DocMind AI Backend**, built using:
 
 - FastAPI
 - LangChain
@@ -142,54 +220,43 @@ This frontend communicates with the **DocMind AI Backend** built using:
 
 Backend Repository:
 
-```
-<backend-repository-link>
-```
+https://github.com/ImOmkar/pdf-chatbot
 
 ---
 
-## 🎯 Highlights
+# 🎯 Highlights
 
 - Modern responsive UI
-- Multi-document AI chat
-- Streaming responses
+- Multi-document Retrieval-Augmented Generation (RAG)
+- Streaming AI responses
 - Source-grounded answers
-- Mobile-first design
-- Clean component architecture
-- Reusable dialogs and bottom sheets
+- Mobile-first experience
+- Reusable component architecture
+- Clean API integration
+- Production deployment on Vercel
 
 ---
 
-## 📸 Screenshots
+# 🚀 Future Improvements
 
-> Screenshots will be added after deployment.
-
----
-
-## 🌍 Live Demo
-
-Frontend
-
-```
-Coming Soon
-```
-
-Backend API
-
-```
-Coming Soon
-```
+- Authentication & user accounts
+- Cloud file storage (AWS S3)
+- PostgreSQL support
+- OCR for scanned PDFs
+- Highlight cited text inside PDFs
+- Conversation sharing
+- Dark / Light theme toggle
 
 ---
 
-## 📄 License
+# 📄 License
 
-This project is created for learning and portfolio purposes.
+This project is developed for **learning and portfolio purposes**.
 
 ---
 
-## 👨‍💻 Author
+# 👨‍💻 Author
 
 **Omkar Parab**
 
-If you found this project interesting, feel free to connect or explore the backend repository.
+If you found this project interesting, feel free to ⭐ the repository and explore the backend implementation as well.
