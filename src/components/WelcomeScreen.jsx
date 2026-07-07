@@ -12,11 +12,9 @@ import {
 }
 from "react"
 
-import UploadDropZone
-from "./UploadDropZone"
+import UploadDropZone from "./UploadDropZone"
 
-import ActionCard
-from "./ActionCard"
+import ActionCard from "./ActionCard"
 
 export default function WelcomeScreen({ 
     
