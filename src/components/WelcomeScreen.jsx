@@ -12,7 +12,7 @@ import {
 }
 from "react"
 
-import UploadDropzone from "./UploadDropZone"
+import UploadDropzone from "./UploadDropzone"
 
 import ActionCard from "./ActionCard"
 
