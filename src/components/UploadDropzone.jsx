@@ -69,7 +69,7 @@ export default function UploadDropZone({
     const fileInputRef =
     useRef(null)
 
-    console.log("UploadDropZone rendered")
+    // console.log("UploadDropZone rendered")
 
     return (
 
@@ -448,7 +448,7 @@ export default function UploadDropZone({
 
                             try {
 
-                                console.log(uploading)
+                                // console.log(uploading)
 
                                 setUploading(
                                     true

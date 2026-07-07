@@ -24,9 +24,9 @@ export default function BottomSheet({
 
                 onClick={() => {
 
-                    console.log(
-                        "Backdrop clicked"
-                    )
+                    // console.log(
+                    //     "Backdrop clicked"
+                    // )
 
                     onClose()
 
@@ -55,6 +55,11 @@ export default function BottomSheet({
                     bottom-0
                     left-0
                     right-0
+
+
+                    max-h-[75vh]
+
+                    overflow-y-auto
 
                     bg-slate-900
 

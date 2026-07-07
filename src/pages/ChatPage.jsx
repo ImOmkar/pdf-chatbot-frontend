@@ -59,6 +59,12 @@ import ConfirmModal from "../components/ConfirmModal"
 
 import SourceViewerSheet from "../components/SourceViewerSheet"
 
+import AboutSheet from "../components/AboutSheet"
+
+import AboutDialog from "../components/AboutDialog"
+
+
+
 export default function ChatPage() {
 
     const [
@@ -213,7 +219,13 @@ export default function ChatPage() {
 
     ] = useState(false)
 
+    const [
 
+        aboutOpen,
+
+        setAboutOpen
+
+    ] = useState(false)
 
     const dragCounter = useRef(0)
     const abortControllerRef = useRef(null)
@@ -259,7 +271,7 @@ export default function ChatPage() {
         }
         catch(error) {
 
-            console.log(error)
+            // console.log(error)
 
         }
 
@@ -280,7 +292,7 @@ export default function ChatPage() {
             }
             catch(error) {
 
-                console.log(error)
+                // console.log(error)
 
             }
 
@@ -301,7 +313,7 @@ export default function ChatPage() {
             }
             catch(error) {
 
-                console.log(error)
+                // console.log(error)
 
             }
 
@@ -326,7 +338,7 @@ export default function ChatPage() {
             }
             catch(error) {
 
-                console.log(error)
+                // console.log(error)
 
             }
 
@@ -368,7 +380,7 @@ export default function ChatPage() {
             }
             catch(error) {
 
-                console.log(error)
+                // console.log(error)
 
                 toast.error(
                     "Upload failed."
@@ -515,9 +527,9 @@ export default function ChatPage() {
                 error.name === "AbortError"
             ) {
 
-                console.log(
-                    "Generation stopped."
-                )
+                // console.log(
+                //     "Generation stopped."
+                // )
 
                 return
 
@@ -574,7 +586,7 @@ export default function ChatPage() {
 
             setLoading(false)
 
-            console.log(error)
+            // console.log(error)
 
             let errorMessage =
                 "Something went wrong."
@@ -780,7 +792,7 @@ export default function ChatPage() {
 
         catch (error) {
 
-            console.log(error)
+            // console.log(error)
 
             toast.error(
 
@@ -881,7 +893,7 @@ export default function ChatPage() {
 
         catch (error) {
 
-            console.log(error)
+            // console.log(error)
 
             toast.error(
                 "Export failed."
@@ -932,9 +944,9 @@ export default function ChatPage() {
 
         ) {
 
-            console.log(
-                error
-            )
+            // console.log(
+            //     error
+            // )
 
             toast.error(
 
@@ -980,7 +992,7 @@ export default function ChatPage() {
 
         catch (error) {
 
-            console.log(error)
+            // console.log(error)
 
             toast.error(
                 "Unable to rename chat."
@@ -1007,7 +1019,7 @@ export default function ChatPage() {
 
         catch (error) {
 
-            console.log(error)
+            // console.log(error)
 
             toast.error(
                 "Unable to update pin."
@@ -1063,7 +1075,7 @@ export default function ChatPage() {
         }
         catch(error) {
 
-            console.log(error)
+            // console.log(error)
 
             toast.error(
                 "Couldn't delete session."
@@ -1285,6 +1297,10 @@ export default function ChatPage() {
                 }
 
                 getFileName={getFileName}
+
+                setAboutOpen={
+                    setAboutOpen
+                }
             />
 
             <div
@@ -1746,6 +1762,30 @@ export default function ChatPage() {
 
                 open={
                     isDraggingFile
+                }
+
+            />
+
+            <AboutDialog
+
+                open={aboutOpen}
+
+                onClose={() =>
+
+                    setAboutOpen(false)
+
+                }
+
+            />
+
+            <AboutSheet
+
+                open={aboutOpen}
+
+                onClose={() =>
+
+                    setAboutOpen(false)
+
                 }
 
             />

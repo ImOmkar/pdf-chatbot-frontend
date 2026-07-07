@@ -39,7 +39,7 @@ export default function Message({
 
 }) {
 
-    console.log("suggestions", suggestions)
+    // console.log("suggestions", suggestions)
 
     const [copied, setCopied] = useState(false)
 
@@ -47,7 +47,7 @@ export default function Message({
         role === "user"
 
 
-    console.log(sources)
+    // console.log(sources)
 
 
     const handleCopy =

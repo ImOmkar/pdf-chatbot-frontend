@@ -4,7 +4,7 @@ const API_URL =
     import.meta.env.VITE_API_URL
 
 
-console.log("API url", API_URL)
+// console.log("API url", API_URL)
 
 const api = axios.create({
 
@@ -12,7 +12,7 @@ const api = axios.create({
 
 })
 
-console.log(api)
+// console.log(api)
 
 export const createSession =
     () =>

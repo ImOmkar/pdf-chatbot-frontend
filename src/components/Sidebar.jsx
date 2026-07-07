@@ -1,6 +1,7 @@
 import {
     Search,
-    X
+    X,
+    Info
 }
 from "lucide-react"
 
@@ -34,6 +35,8 @@ from "./DocumentItem"
 
 import toast
 from "react-hot-toast"
+
+
 
 export default function Sidebar({
     sessions,
@@ -71,7 +74,9 @@ export default function Sidebar({
 
     setSessionContextMenu,
 
-    getFileName
+    getFileName,
+
+    setAboutOpen
     
 }) {
 
@@ -141,7 +146,7 @@ export default function Sidebar({
             }
             catch(error) {
 
-                console.log(error)
+                // console.log(error)
 
             }
 
@@ -168,7 +173,7 @@ export default function Sidebar({
             }
             catch(error) {
 
-                console.log(error)
+                // console.log(error)
 
             }
         }
@@ -199,7 +204,7 @@ export default function Sidebar({
             }
             catch(error) {
 
-                console.log(error)
+                // console.log(error)
 
             }
 
@@ -235,7 +240,7 @@ export default function Sidebar({
             }
             catch(error) {
 
-                console.log(error)
+                // console.log(error)
 
             }
 
@@ -423,25 +428,46 @@ export default function Sidebar({
                     border-b
                     border-slate-800">
                     
-                    <div className="">
-                        <h1
-                            className="
-                                text-xl
-                                font-bold
-                                text-white
-                                tracking-tight
-                            ">
-                            PDF ChatBot
-                        </h1>
+                    <div className="flex justify-start items-center">
+                        <div className="flex flex-col">
+                            <h1
+                                className="
+                                    text-xl
+                                    font-bold
+                                    text-white
+                                    tracking-tight
+                                ">
+                                PDF ChatBot
+                            </h1>
 
-                        <p
+                            <p
+                                className="
+                                    text-slate-400
+                                    text-sm
+                                    
+                                ">
+                                AI Document Assistant
+                            </p>
+                        </div>
+                        <button
+                            onClick={() =>
+                                setAboutOpen(true)
+                            }
+                            title="About this app"
                             className="
+                                p-1
+                                mb-4
+                                -ml-5
+                                rounded-full
                                 text-slate-400
-                                text-sm
-                                
+                                hover:bg-slate-800
+                                hover:text-white
+                                transition
+                                animate animate-bounce
                             ">
-                            AI Document Assistant
-                        </p>
+                            <Info size={18} />
+
+                        </button>
                     </div>
 
                     <button 
