@@ -14,7 +14,7 @@ from "react"
 import SelectedFileCard
 from "./SelectedFileCard.jsx"
 
-export default function UploadDropZone({
+export default function UploadDropzone({
 
     selectedFile,
 

@@ -326,7 +326,7 @@ export default function WelcomeScreen({
 
                         />
 
-                        <UploadDropZone
+                        <UploadDropzone
 
                             selectedFile={selectedFile}
 
