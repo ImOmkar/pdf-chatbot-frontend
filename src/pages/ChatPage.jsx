@@ -1199,7 +1199,9 @@ export default function ChatPage() {
             onDrop={handleDrop}
 
             className="
-                h-screen
+                h-dvh
+                overflow-hidden
+
                 flex
                 bg-gradient-to-b
                 from-slate-950

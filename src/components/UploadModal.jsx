@@ -31,8 +31,8 @@ export default function UploadModal({
         <div
             className="
                 p-4
-                border-b
-                border-slate-800
+                
+                
             "
         >
 

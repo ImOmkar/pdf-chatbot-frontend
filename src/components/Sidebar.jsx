@@ -382,7 +382,9 @@ export default function Sidebar({
                     top-0
                     left-0
 
-                    h-screen
+                    h-dvh
+                    overflow-y-auto
+                    overflow-x-hidden
 
                     w-80
 
@@ -409,7 +411,8 @@ export default function Sidebar({
                     lg:static
                     lg:flex-shrink-0
                 `}>
-
+                
+                {/* sidebar header */}
                 <div
                     className="
                     flex 
@@ -463,13 +466,15 @@ export default function Sidebar({
                     </button>
 
                 </div>
-
-                <div className="p-4">
+                
+                {/* new chat and upload div */}
+                <div className="px-4 pt-4">
 
                     <button
                         onClick={onNewChat}
                         className="
                             w-full
+                            
                             bg-gradient-to-r
                             from-blue-600
                             to-blue-500
@@ -488,118 +493,132 @@ export default function Sidebar({
                         onUpload={onUpload}
                     />
 
-                    <div
-                        className="
-                            mt-4
-                            px-4
-                        "
-                    >
-
+                </div>
+                
+                {/* documents div */}
+                <div
+                    className="
+                        px-4 py-3
+                        border-t
+                        border-b
+                        border-slate-800
+                    ">
+                    
+                    <div className="flex justify-between items-center mb-3">
                         <h3
                             className="
                                 text-[11px]
                                 uppercase
                                 tracking-[0.2em]
                                 text-slate-500
-                                mb-3
-                            "
-                        >
+                                
+                            ">
                             Documents
                         </h3>
-
-                        {
-
-                            documents?.map(
-                                (
-                                    document
-                                ) => (
-
-                                    <DocumentItem
-
-                                        key={
-                                            document
-                                        }
-
-                                        document={
-                                            document
-                                        }
-
-                                        documentInfo={
-                                            documentInfo
-                                        }
-
-                                        activeDocument={
-                                            activeDocument
-                                        }
-
-                                        setActiveDocument={
-                                            setActiveDocument
-                                        }
-
-                                        loadDocumentInfo={
-                                            loadDocumentInfo
-                                        }
-
-                                        setConfirmModal={
-                                            setConfirmModal
-                                        }
-
-                                        handleDeleteDocument={
-                                            handleDeleteDocument
-                                        }
-
-                                        getFileName={
-                                            getFileName
-                                        }
-
-                                        selectedDocuments={selectedDocuments}
-
-                                        setSelectedDocuments={setSelectedDocuments}
-
-                                    />
-
-                                )
-                            )
-                        }
-
                         {selectedDocuments.length > 0 && (
-
                             <button
-
                                 onClick={() =>
-
                                     setSelectedDocuments([])
-
                                 }
-
                                 className="
-                                    mt-3
-
                                     text-sm
-
-                                    text-slate-400
-
-                                    hover:text-white
-
+                                    text-red-500
                                     transition-colors
-                                "
-
-                            >
-
-                                Clear Document Selection
-
+                                    hover:underline hover:underline-offset-4
+                                ">
+                                deselect all
                             </button>
-
                         )}
                     </div>
 
-                </div>
+                    {
+                        documents?.length === 0 ? (
+                            <div
+                                className="
+                                    py-4
+                                    text-center
+                                    text-slate-500
+                                ">
 
+                                <Search
+                                    size={28}
+                                    className="
+                                        mx-auto
+                                        mb-3
+                                    "
+                                />
+
+                                <p>
+                                    No documents found
+                                </p>
+
+                            </div>
+                        ) 
+                        :
+                        (
+
+                        documents?.map (
+                            (
+                                document
+                            ) => (
+
+                                <DocumentItem
+
+                                    key={
+                                        document
+                                    }
+
+                                    document={
+                                        document
+                                    }
+
+                                    documentInfo={
+                                        documentInfo
+                                    }
+
+                                    activeDocument={
+                                        activeDocument
+                                    }
+
+                                    setActiveDocument={
+                                        setActiveDocument
+                                    }
+
+                                    loadDocumentInfo={
+                                        loadDocumentInfo
+                                    }
+
+                                    setConfirmModal={
+                                        setConfirmModal
+                                    }
+
+                                    handleDeleteDocument={
+                                        handleDeleteDocument
+                                    }
+
+                                    getFileName={
+                                        getFileName
+                                    }
+
+                                    selectedDocuments={selectedDocuments}
+
+                                    setSelectedDocuments={setSelectedDocuments}
+
+                                />
+
+                            )
+                        ))
+                    }
+
+                </div>
+                
+                {/* conversation div */}
                 <div
                     className="
                         flex-1
                         overflow-y-auto
                         px-4
+                        py-3
                     ">
 
                     <h3
@@ -713,7 +732,7 @@ export default function Sidebar({
 
                             <div
                                 className="
-                                    py-8
+                                    py-4
                                     text-center
                                     text-slate-500
                                 "
