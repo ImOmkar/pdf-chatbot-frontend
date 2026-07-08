@@ -340,7 +340,7 @@ export default function AboutContent() {
                     </a>
 
                     <a
-                        href="https://drive.google.com/file/d/1t7U7hyFrOV_URHOMyx2AfJH6xeE4aaeJ/view?usp=sharing"
+                        href="https://drive.google.com/drive/folders/14oidiEV-brj8g5srm8Wx76dxGeF_XRJw?usp=sharing"
 
                         target="_blank"
 
